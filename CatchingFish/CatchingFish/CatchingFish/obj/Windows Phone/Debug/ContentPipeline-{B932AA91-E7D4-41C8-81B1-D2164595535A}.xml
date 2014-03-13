@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XnaContent xmlns:Pipeline="Microsoft.Xna.Framework.Content.Pipeline">
+  <Asset Type="Pipeline:BuildItemCollection">
+    <Item>
+      <Source>loading.jpg</Source>
+      <Name>loading</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\loading.xnb</Output>
+      <Time>2014-03-06T16:09:32.8198256+08:00</Time>
+    </Item>
+    <Item>
+      <Source>Windows Ding.wav</Source>
+      <Name>Windows Ding</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Windows Ding.xnb</Output>
+      <Time>2014-03-07T17:01:15.4447018+08:00</Time>
+    </Item>
+    <Item>
+      <Source>pause.png</Source>
+      <Name>pause</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\pause.xnb</Output>
+      <Time>2014-03-09T14:24:31.510045+08:00</Time>
+    </Item>
+    <Item>
+      <Source>play.png</Source>
+      <Name>play</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\play.xnb</Output>
+      <Time>2014-03-09T14:48:30.0804183+08:00</Time>
+    </Item>
+    <Item>
+      <Source>fish.png</Source>
+      <Name>fish</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\fish.xnb</Output>
+      <Time>2014-03-09T17:18:39.1549595+08:00</Time>
+    </Item>
+    <Item>
+      <Source>Background.png</Source>
+      <Name>Background</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Background.xnb</Output>
+      <Time>2014-03-13T15:49:25.5410104+08:00</Time>
+    </Item>
+    <Item>
+      <Source>cat_net.png</Source>
+      <Name>cat_net</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\cat_net.xnb</Output>
+      <Time>2014-03-13T16:12:37.2955289+08:00</Time>
+    </Item>
+    <BuildSuccessful>true</BuildSuccessful>
+    <Settings>
+      <ContentProjectGUID>{B932AA91-E7D4-41C8-81B1-D2164595535A}</ContentProjectGUID>
+      <TargetPlatform>WindowsPhone</TargetPlatform>
+      <TargetProfile>Reach</TargetProfile>
+      <BuildConfiguration>Debug</BuildConfiguration>
+      <CompressContent>false</CompressContent>
+      <RootDirectory>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFishContent\</RootDirectory>
+      <LoggerRootDirectory>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\</LoggerRootDirectory>
+      <IntermediateDirectory>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\</IntermediateDirectory>
+      <OutputDirectory>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\</OutputDirectory>
+    </Settings>
+    <Assemblies>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\Program Files (x86)\Microsoft XNA\XNA Game Studio\v4.0\References\Windows\x86\Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll</Key>
+        <Value>2012-09-06T14:52:54+08:00</Value>
+      </Assembly>
+      <Assembly>
+        <Key>C:\WINDOWS\Microsoft.Net\assembly\GAC_32\Microsoft.Xna.Framework.Content.Pipeline\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Content.Pipeline.dll</Key>
+        <Value>2014-02-02T19:25:06.9815579+08:00</Value>
+      </Assembly>
+    </Assemblies>
+  </Asset>
+</XnaContent>

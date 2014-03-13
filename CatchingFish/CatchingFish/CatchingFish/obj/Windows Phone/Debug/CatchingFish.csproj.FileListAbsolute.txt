@@ -1,0 +1,19 @@
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\CatchingFish.csprojResolveAssemblyReference.cache
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\loading.xnb
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.dll
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.pdb
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\CatchingFish.dll
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\CatchingFish.pdb
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\AppManifest.xaml
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml.g
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml
+bin\Windows Phone\Debug\
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
+c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\fish.xnb
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Windows Ding.xnb
+C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\pause.xnb
+C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\play.xnb
+C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Background.xnb
+C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\cat_net.xnb
