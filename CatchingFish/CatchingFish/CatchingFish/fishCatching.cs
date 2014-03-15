@@ -54,11 +54,14 @@ namespace CatchingFish
         private int lastCount = 0;
         private int fishCount = 1;//捕到的鱼总数
 
+        SpriteFont scoreFont;
+
         List<Fish> fishes;
 
         Texture2D logo;//渔网
         Texture2D pause;//暂停按钮
         Texture2D play;//继续按钮
+        Texture2D backgroundTexture;//背景图片
 
         Vector2 logoPosition;//渔网的坐标
         Vector2 logoVelocity;//渔网的速度
@@ -138,6 +141,8 @@ namespace CatchingFish
         {
             // 创建新的 SpriteBatch，可将其用于绘制纹理。
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            ContentManager cm = this.Content;
+            scoreFont = cm.Load<SpriteFont>("scoreFont");
             logo = Content.Load<Texture2D>("cat_net");
             Viewport viewport = graphics.GraphicsDevice.Viewport;
             logoPosition = new Vector2((viewport.Width - logo.Width)/2, (viewport.Height - logo.Height)/2);
@@ -157,6 +162,8 @@ namespace CatchingFish
             }
 
             soundEffect = Content.Load<SoundEffect>("Windows Ding");
+
+            backgroundTexture = Content.Load<Texture2D>("Background");
 
             pause = Content.Load<Texture2D>("pause");
             play = Content.Load<Texture2D>("play");
@@ -231,6 +238,9 @@ namespace CatchingFish
                     fish_each.position.X = logoPosition.X + logo.Width / 2;
                     fish_each.position.Y = logoPosition.Y + logo.Height / 2;
                     SoundEffectInstance re = soundEffect.CreateInstance();
+                    fish_each.isCaught = true;//将捕到的鱼标记为true
+                    fishes.Remove(fish_each);//移除捕到的鱼
+                    fishCount++;
                     re.Play();
                     re.Pause();
 
@@ -251,6 +261,11 @@ namespace CatchingFish
                         fish_each.position += fish_each.speed * elapsedTime;
                         this.count = 0;
                     }
+                }
+
+                if (fishes.Count() < 10)
+                {
+                    fishes.Add(new Fish(rand.Next(0, 480), rand.Next(0, 800), false));
                 }
 
             }
@@ -291,17 +306,24 @@ namespace CatchingFish
         /// <param name="gameTime">提供计时值的快照。</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
 
             // TODO: 在此处添加绘图代码
+            spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
 
             base.Draw(gameTime);
             spriteBatch.Begin();
             spriteBatch.Draw(logo, logoPosition, Color.White);
             foreach(Fish each in fishes)
             {
-                spriteBatch.Draw(each.fish_pic, each.position, each.color);
+                if (!each.isCaught)
+                {
+                    spriteBatch.Draw(each.fish_pic, each.position, each.color);
+                }
+                
             }
+
+            spriteBatch.DrawString(scoreFont, "捕到的鱼:" + fishCount, new Vector2(10, 10), Color.DarkBlue, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
             
             spriteBatch.End();
         }
