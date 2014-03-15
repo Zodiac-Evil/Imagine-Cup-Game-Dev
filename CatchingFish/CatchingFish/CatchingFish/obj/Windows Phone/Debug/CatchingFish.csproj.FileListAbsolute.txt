@@ -8,7 +8,6 @@ c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\AppManifest.xaml
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml.g
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml
-bin\Windows Phone\Debug\
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
 c:\users\zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\fish.xnb

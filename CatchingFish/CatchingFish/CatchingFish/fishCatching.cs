@@ -37,7 +37,6 @@ namespace CatchingFish
 
             public Fish(float x, float y, Boolean caught)
             {
-
                 position = new Vector2(x, y);
 
                 speed = new Vector2(rand.Next(-480, 480), rand.Next(-800, 800));
@@ -45,14 +44,13 @@ namespace CatchingFish
                 color = Color.White;
 
                 isCaught = caught;
-
             }
         }
 
 
         private int count = 0;
         private int lastCount = 0;
-        private int fishCount = 1;//捕到的鱼总数
+        private int fishCount = 0;//捕到的鱼总数
 
         SpriteFont scoreFont;
 
@@ -326,18 +324,6 @@ namespace CatchingFish
             spriteBatch.DrawString(scoreFont, "捕到的鱼:" + fishCount, new Vector2(10, 10), Color.DarkBlue, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
             
             spriteBatch.End();
-        }
-
-        public void DrawNativeTools()
-        {
-            if (!GameSettings.GamePause)
-            {
-                spriteBatch.Draw(pause, new Vector2(470, 2), Color.White);
-            }
-            else
-            {
-                spriteBatch.Draw(play, new Vector2(470, 2), Color.White);
-            }
         }
     }
 }
