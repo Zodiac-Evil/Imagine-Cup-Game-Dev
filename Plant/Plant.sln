@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plant", "Plant\Plant\Plant.csproj", "{E6CCE122-0149-4D53-BD20-4074EF7B409E}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "PlantContent", "Plant\PlantContent\PlantContent.contentproj", "{6F811DDA-2183-478E-B61C-C69357AAD34E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{E6CCE122-0149-4D53-BD20-4074EF7B409E}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{6F811DDA-2183-478E-B61C-C69357AAD34E}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{6F811DDA-2183-478E-B61C-C69357AAD34E}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
