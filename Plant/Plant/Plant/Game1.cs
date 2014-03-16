@@ -54,8 +54,10 @@ namespace Plant
 
         List<fields> field;
 
+        Texture2D backgroundTexture;//背景图片
         Texture2D harvest;//收获按钮
         Texture2D backwards;//后退按钮
+
 
         Texture2D seed_carrot;//胡萝卜种子图片
         Texture2D seed_Chinese_cabbage;//白菜种子图片
@@ -240,6 +242,17 @@ namespace Plant
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: 在此处添加绘图代码
+            //添加背景图片
+            spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
+
+            //添加返回按钮
+            spriteBatch.Draw(backwards, new Vector2(10, 20), Color.White);
+
+            //添加数目栏
+            spriteBatch.DrawString(storageFont, "白菜：" + Chinese_cabbage + "株", new Vector2(80, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            spriteBatch.DrawString(storageFont, "胡萝卜：" + carrot + "株", new Vector2(250, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+
+
 
             base.Draw(gameTime);
         }
