@@ -28,7 +28,7 @@ namespace Plant
             public int id;
             public Texture2D place;
 
-            public int type;
+            public int type;//1代表白菜，2代表胡萝卜
 
             public Boolean isRaped;//成熟了
             public Boolean isSaw;//播种了
@@ -49,8 +49,9 @@ namespace Plant
         }
 
         public Texture2D solid;
-        public Texture2D seed;
-        public Texture2D fruit;
+        public Texture2D seed;//在田地里显示的种子图片
+        public Texture2D fruit_carrot;//在田地里显示的胡萝卜图片
+        public Texture2D fruit_cabage;//在田地里显示的白菜图片
 
         List<fields> field;
 
@@ -62,8 +63,8 @@ namespace Plant
         Texture2D seed_carrot;//胡萝卜种子图片
         Texture2D seed_Chinese_cabbage;//白菜种子图片
 
-        Vector2 carrot_position;
-        Vector2 chinese_cabbage_position;
+        Vector2 position_01;//白菜种子位置
+        Vector2 position_02;//胡萝卜种子位置
 
         int carrot_harvest;//记录收获的胡萝卜数
         int chinese_cabbage_harvest;//记录收获的白菜数
@@ -79,6 +80,9 @@ namespace Plant
             graphics.PreferredBackBufferWidth = 480;
 
             graphics.PreferredBackBufferHeight = 800;
+            
+            position_01 = new Vector2(100, 750);
+            position_02 = new Vector2(380, 750);
 
             field = new List<fields>();
 
@@ -128,11 +132,15 @@ namespace Plant
             {
                 each.place = Content.Load<Texture2D>("solid");
             }
-
+            
             solid = Content.Load<Texture2D>("solid");
             seed_carrot = Content.Load<Texture2D>("seed_carrot");
             seed_Chinese_cabbage = Content.Load<Texture2D>("seed_chinese_cabbage");
-            fruit = Content.Load<Texture2D>("fruit");
+            fruit_carrot = Content.Load<Texture2D>("fruit_carrot");
+            fruit_cabbage = Content.Load<Texture2D>("fruit_cabbage");
+            
+            //显示田地里的种子图片
+            seed = Content.Load<Texture2D>("seed");
 
             harvest = Content.Load<Texture2D>("harvest");
             backwards = Content.Load<Texture2D>("backwards");
@@ -171,7 +179,12 @@ namespace Plant
                 this.Exit();
 
             // TODO: 在此处添加更新逻辑
+            
             Viewport view = graphics.GraphicsDevice.Viewport;
+            
+            //计算消耗时间
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float totalTime = (float)gameTime.TotalGameTime.TotalSeconds;
 
             while (TouchPanel.IsGestureAvailable)
             {
@@ -183,10 +196,10 @@ namespace Plant
                         {
                             if (!each.isSaw)
                             {//如果该块田未种植
-                                if (gs.Position.X > 100 && gs.Position.X < 150 && gs.Position.Y > 750 && gs.Position.Y < 790 && (gs.Position.X + gs.Delta.X) > each.position.X && (gs.Position.X + gs.Delta.X) < each.position.X + each.place.Width && (gs.Position.Y + gs.Delta.Y) > each.position.Y && (gs.Position.Y + gs.Delta.Y) < each.position.Y + each.place.Height)
+                                if (gs.Position.X > 100 && gs.Position.X < 150 && gs.Position.Y > 750 && gs.Position.Y < 790)
                             {//如果手指将白菜种子所在区域按住
-                                chinese_cabbage_position.X = gs.Delta.X;
-                                chinese_cabbage_position.Y = gs.Delta.Y;
+                                position_01.X += gs.Delta.X;
+                                position_01.Y += gs.Delta.Y;
 
                                 if ((gs.Position.X + gs.Delta.X) > each.position.X && (gs.Position.X + gs.Delta.X) < each.position.X + each.place.Width && (gs.Position.Y + gs.Delta.Y) > each.position.Y && (gs.Position.Y + gs.Delta.Y) < each.position.Y + each.place.Height)
                                 {//如果手指进行拖动并降落在某块田区域
@@ -197,14 +210,15 @@ namespace Plant
                                     {//手指松开，开始种植白菜种子
                                         each.isSaw = true;
                                         each.type = 1;
-                                    }
-                                }
-                            }
+                                        position_01 = new Vector2(100, 750);
+                                    }//end if
+                                }//end if
+                            }//end if
 
                                 if (gs.Position.X > 380 && gs.Position.X < 430 && gs.Position.Y > 750 && gs.Position.Y < 790)
                                 {//如果手指将胡萝卜种子所在区域按住
-                                    carrot_position.X = gs.Delta.X;
-                                    carrot_position.Y = gs.Delta.Y;
+                                    position_02.X += gs.Delta.X;
+                                    position_02.Y += gs.Delta.Y;
 
                                     if ((gs.Position.X + gs.Delta.X) > each.position.X && (gs.Position.X + gs.Delta.X) < each.position.X + each.place.Width && (gs.Position.Y + gs.Delta.Y) > each.position.Y && (gs.Position.Y + gs.Delta.Y) < each.position.Y + each.place.Height)
                                     {//如果手指进行拖动并降落在某块田区域
@@ -215,15 +229,35 @@ namespace Plant
                                         {//手指松开,开始种植胡萝卜种子
                                             each.isSaw = true;
                                             each.type = 2;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                                            position_02 = new Vector2(380, 750);
+                                        }//end if
+                                    }//end if
+                                }//end if
+                                
+                            }//end if
+                        }//end foreach
                         break;
                     case GestureType.Tap:
-                        if (gs.Position.X > 400 && gs.Position.X < 400 + harvest.Width && gs.Position.Y > 20 && gs.Position.Y < 20 + harvest.Height)
-                        {//如果点按了收获按钮
+                        foreach(Fields each in Field){
+                            if (gs.Position.X > 400 && gs.Position.X < 400 + harvest.Width && gs.Position.Y > 20 && gs.Position.Y < 20 + harvest.Height)
+                            {//如果点按了收获按钮
+                                soundEffect.play();
+                                if(each.isRaped){
+                                    each.isSaw = false;
+                                    each.isRaped = false;
+                                    if(each.type == 1){//收获白菜一株
+                                        addChinese_cabbage();
+                                        each.isHarvested = true;
+                                    }//end if
+                                    if(each.type == 2){//收获胡萝卜一株
+                                        addCarrot();
+                                        each.isHarvested = true;
+                                    }//end if
+                                }//end if
+                            }//end if
+                        }//end foreach
+                        
+                        if(gs.position.X > 10 && gs.position.X < 40 && gs.position.Y > 20 && gs.position.Y < 40){//点按返回按钮
                             
                         }
                         break;
@@ -249,11 +283,38 @@ namespace Plant
             spriteBatch.Draw(backwards, new Vector2(10, 20), Color.White);
 
             //添加数目栏
-            spriteBatch.DrawString(storageFont, "白菜：" + Chinese_cabbage + "株", new Vector2(80, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-            spriteBatch.DrawString(storageFont, "胡萝卜：" + carrot + "株", new Vector2(250, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-
-
-
+            spriteBatch.DrawString(storageFont, "白菜：" + Chinese_cabbage + " 株", new Vector2(80, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            spriteBatch.DrawString(storageFont, "胡萝卜：" + carrot + " 株", new Vector2(250, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            
+            //添加收割按钮
+            spriteBatch.Draw(harvest, new Vector2(400, 20), Color.White);
+            
+            //画出6块种植田
+            foreach(Fields each in Field){
+                if(!each.isSaw){//如果未播种
+                    spriteBatch.Draw(solid, each.position, each.color);
+                }
+                else{
+                    if(each.isSaw){//如果播种了
+                        if(!each.isRaped){//如果播种了但没有成熟
+                            spriteBatch.Draw(seed, each.position, each.color);
+                        }
+                        else{//如果成熟了
+                            if(each.type == 1){
+                                spriteBatch.Draw(fruit_cabbage, each.position, each.color);
+                            }
+                            if(each.type == 2){
+                                spriteBatch.Draw(fruit_carrot, each.position, each.color);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //画出底部两种种子图片
+            spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Yellow);
+            spriteBatch.Draw(seed_carrot, position_02, Color.Yellow);
+            
             base.Draw(gameTime);
         }
     }
