@@ -10,7 +10,7 @@ namespace CatchingFish
         /// </summary>
         static void Main(string[] args)
         {
-            using (fishCatching game = new fishCatching())
+            using (CatchingFish game = new CatchingFish())
             {
                 game.Run();
             }

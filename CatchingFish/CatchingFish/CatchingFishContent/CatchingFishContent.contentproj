@@ -79,8 +79,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="scoreFont.spritefont">
-      <Name>scoreFont</Name>
+    <Compile Include="btnHelp.png">
+      <Name>btnHelp</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Instructions.png">
+      <Name>Instructions</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Times New Roman.spritefont">
+      <Name>Times New Roman</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
     </Compile>

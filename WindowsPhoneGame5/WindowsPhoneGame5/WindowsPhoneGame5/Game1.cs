@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
+using System.IO.IsolatedStorage;
 
 namespace WindowsPhoneGame5
 {
@@ -42,7 +43,8 @@ namespace WindowsPhoneGame5
             public Vector2 position;
             public Color color;
 
-            public DateTimeOffset offset, localTime, oughtTime;
+            public DateTimeOffset offset, localTime;
+            public String oughtTime;
 
             public fields(int id, float x, float y, Boolean isSaw, Boolean isRaped, Boolean isHarvested)
             {
@@ -114,6 +116,33 @@ namespace WindowsPhoneGame5
         protected override void Initialize()
         {
             // TODO: 在此处添加初始化逻辑
+            //打开本地存储独立空间，加载存在文件中的数据
+#if WINDOWS_PHONE
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+#else
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain())
+#endif
+            {
+                if (savegameStorage.FileExists("fields"))
+                {
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fields", System.IO.FileMode.Open))
+                    {
+                        if (fs != null)
+                        {
+                            //重载存储的最高记录
+                            byte[] saveBytes_carrot = new byte[4];
+                            byte[] saveBytes_cabbage = new byte[4];
+
+                            int count_carrot = fs.Read(saveBytes_carrot, 0, 4);
+                            int count_cabbage = fs.Read(saveBytes_cabbage, 0, 4);
+                            if (count_carrot > 0)
+                            {
+                                carrot = System.BitConverter.ToInt32(saveBytes_carrot, 0);
+                            }
+                        }
+                    }
+                }
+            }
 
             base.Initialize();
         }
@@ -195,10 +224,13 @@ namespace WindowsPhoneGame5
 
             for (int j = 0; j < 8; j++)
             {
+                //从本地存储的数据转换为内存中的数组
+                //提取之前储存在本地标号为j的时间戳，转换为DateTimeOffset格式
+                
+
                 if (Equals(field[j].oughtTime, currentTime))
                 {
                     field[j].isRaped = true;
-
                 }
             }
 
@@ -219,26 +251,52 @@ namespace WindowsPhoneGame5
 
                                 if (tl.State == TouchLocationState.Pressed)
                                 {
-                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width)
+                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width && tl.State == TouchLocationState.Released)
                                     {//按住了某一块田
                                         field[i].isSaw = true;
                                         field[i].type = 1;
                                         //获取手机系统时间开始计时60分钟
                                         field[i].offset = DateTimeOffset.UtcNow;
                                         field[i].localTime = field[i].offset.ToLocalTime();
-                                        field[i].oughtTime = field[i].localTime.AddMinutes(60);
-                                        
+                                        field[i].oughtTime = field[i].localTime.AddMinutes(60).ToString();
+                                        //把这块田的所有最新信息(不是此时，而是退出游戏时)存到手机里，按照标号i
+
                                         field[i].color = Color.Green;
                                         flat_01 = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                    }//end if
+                                }//end if
+                            }//end if
+                        }//end for
+                    }//end if
                     if (tl.Position.X >= 380 && tl.Position.X <= 460 && tl.Position.Y >= 700 && tl.Position.Y <= 780 && tl.State == TouchLocationState.Released)
                     {//如果点按了胡萝卜种子
                         flat_02 = true;
-                    }
+
+                        for (int i = 0; i < 6; i++)
+                        {//对于每一块田
+                            if (!field[i].isSaw)
+                            {
+                                field[i].color = Color.Yellow;
+
+                                if (tl.State == TouchLocationState.Pressed)
+                                {
+                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width && tl.State == TouchLocationState.Released)
+                                    {//按住了某一块田
+                                        field[i].isSaw = true;
+                                        field[i].type = 2;
+                                        //获取手机系统时间开始计时60分钟
+                                        field[i].offset = DateTimeOffset.UtcNow;
+                                        field[i].localTime = field[i].offset.ToLocalTime();
+                                        field[i].oughtTime = field[i].localTime.AddMinutes(60).ToString();
+                                        //把这块田的所有信息存到手机里，按照标号i
+
+                                        field[i].color = Color.Green;
+                                        flat_02 = false;
+                                    }//end if
+                                }//end if
+                            }//end if
+                        }//end for
+                    }//end if
 
                     if (tl.Position.X >= 400 && tl.Position.X <= 400 + harvest.Width && tl.Position.Y >= 20 && tl.Position.Y <= 20 + harvest.Height)
                     {//如果点按收割按钮
@@ -248,14 +306,23 @@ namespace WindowsPhoneGame5
                             {
                                 if (field[i].isRaped)
                                 {
-                                    field[i].isHarvested = true;
+                                    if (field[i].type == 1)
+                                    {//收获一株白菜
+                                        addChinese_cabbage();
+                                    }
+                                    else if (field[i].type == 2)
+                                    {//收获一根胡萝卜
+                                        addCarrot();
+                                    }
+
+                                    field[i].isHarvested = true;//标记为已收获
                                     field[i].isSaw = false;//标记为未播种，可以播种
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                }//end if
+                            }//end for
+                        }//end if
+                    }//end if
+                }//end if
+            }//end foreach
 
             base.Update(gameTime);
         }
@@ -323,7 +390,7 @@ namespace WindowsPhoneGame5
                         }
                     }
                 }
-            }//end forfield[j]
+            }//end foreach
 
             //画出种子图片
             if (flat_01)
@@ -348,6 +415,33 @@ namespace WindowsPhoneGame5
 
             spriteBatch.End();
             
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
+#if WINDOWS_PHONE
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+
+            //打开独立存储空间，写文件
+            IsolatedStorageFileStream fs = null;
+            using (fs = savegameStorage.CreateFile("fields"))
+            {
+                if (fs != null)
+                {
+                    //写数据
+                    byte[] bytes_carrot = System.BitConverter.GetBytes(carrot);//写入得到的胡萝卜数
+                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(Chinese_cabbage);//写入得到的白菜数
+
+                    fs.Write(bytes_carrot, 0, bytes_carrot.Length);
+                    fs.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                }
+            }
+
+            base.OnExiting(sender, args);
         }
 
         public void addCarrot()

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Devices.Sensors;
+using System.IO.IsolatedStorage;
 
 namespace CatchingFish
 {
@@ -35,6 +36,8 @@ namespace CatchingFish
 
             public Boolean isCaught;
 
+            public int f_count;//过一段时间生成新鱼
+
             public Fish(float x, float y, Boolean caught)
             {
                 position = new Vector2(x, y);
@@ -44,6 +47,7 @@ namespace CatchingFish
                 color = Color.White;
 
                 isCaught = caught;
+                f_count = 0;
             }
         }
 
@@ -52,9 +56,11 @@ namespace CatchingFish
         private int lastCount = 0;
         private int fishCount = 0;//捕到的鱼总数
 
+        
+
         SpriteFont scoreFont;
 
-        List<Fish> fishes;
+        Fish[] fishes = new Fish[8];//一定不要改
 
         Texture2D logo;//渔网
         Texture2D pause;//暂停按钮
@@ -67,7 +73,7 @@ namespace CatchingFish
         //Vector2 endpoint = new Vector2(200, 300);
         //Vector2 endpoint01 = new Vector2(200, 300);
 
-        SoundEffect soundEffect;
+        //SoundEffect soundEffect;
 
         public fishCatching()
         {
@@ -75,8 +81,6 @@ namespace CatchingFish
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 480;
             graphics.PreferredBackBufferHeight = 800;
-
-            fishes = new List<Fish>();
 
             // Windows Phone 的默认帧速率为 30 fps。
             TargetElapsedTime = TimeSpan.FromTicks(33333);
@@ -94,6 +98,40 @@ namespace CatchingFish
         protected override void Initialize()
         {
             // TODO: 在此处添加初始化逻辑
+            fishes[0] = new Fish(20, 20, false);
+            fishes[1] = new Fish(200, 700, false);
+            fishes[2] = new Fish(100, 480, false);
+            fishes[3] = new Fish(50, 400, false);
+            fishes[4] = new Fish(200, 40, false);
+            fishes[5] = new Fish(200, 400, false);
+            fishes[6] = new Fish(287, 180, false);
+            fishes[7] = new Fish(160, 280, false);
+
+            //open isolated storage, and load data from the savefile if it exists.
+#if WINDOWS_PHONE
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+#else
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain())
+#endif
+            {
+                if (savegameStorage.FileExists("fish_amount"))
+                {
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.Open))
+                    {
+                        if (fs != null)
+                        {
+                            //Reload the saved high-score data.
+                            byte[] saveBytes = new byte[4];
+                            int count = fs.Read(saveBytes, 0, 4);
+                            if (count > 0)
+                            {
+                                fishCount = System.BitConverter.ToInt32(saveBytes, 0);
+                            }
+                        }
+                    }
+                }
+            }
+
             if (!Accelerometer.IsSupported)
             {//检测设备是否支持重力感应，不支持则抛出异常
                 throw new Exception("Device does not support accelerometer!");
@@ -140,26 +178,17 @@ namespace CatchingFish
             // 创建新的 SpriteBatch，可将其用于绘制纹理。
             spriteBatch = new SpriteBatch(GraphicsDevice);
             ContentManager cm = this.Content;
-            scoreFont = cm.Load<SpriteFont>("scoreFont");
+            scoreFont = Content.Load<SpriteFont>("Times New Roman");
             logo = Content.Load<Texture2D>("cat_net");
             Viewport viewport = graphics.GraphicsDevice.Viewport;
             logoPosition = new Vector2((viewport.Width - logo.Width)/2, (viewport.Height - logo.Height)/2);
 
-            fishes.Add(new Fish(20, 50, false));
-            fishes.Add(new Fish(30, 50, false));
-            fishes.Add(new Fish(75, 100, false));
-            fishes.Add(new Fish(200, 500, false));
-            fishes.Add(new Fish(92, 70, false));
-            fishes.Add(new Fish(30, 80, false));
-            fishes.Add(new Fish(25, 85, false));
-            fishes.Add(new Fish(200, 100, false));
-
-            foreach (Fish each in fishes)
+            for (int i = 0; i < 8; i++)
             {
-                each.fish_pic = Content.Load<Texture2D>("fish");
+                fishes[i].fish_pic = Content.Load<Texture2D>("fish");
             }
 
-            soundEffect = Content.Load<SoundEffect>("Windows Ding");
+            //soundEffect = Content.Load<SoundEffect>("Windows Ding");
 
             backgroundTexture = Content.Load<Texture2D>("Background");
 
@@ -199,49 +228,67 @@ namespace CatchingFish
 
             Viewport viewport = graphics.GraphicsDevice.Viewport;
 
-            
-            
+            if (totalTime == 60)
+            {
+                Exit();
+            }
 
             //鱼不能超过边界
-            foreach(Fish fish_each in fishes){
-                if (fish_each.position.X < 0)
+            for (int i = 0; i < 8; i++)
             {
-                fish_each.speed.X *= -1;
-                fish_each.position += fish_each.speed * elapsedTime;
-            }
-            else
-                    if (fish_each.position.X > viewport.Width - fish_each.fish_pic.Width)
-                {
-                    fish_each.speed.X *= -1;
-                    fish_each.position += fish_each.speed * elapsedTime;
-                }
-
-                if (fish_each.position.Y < 0)
-                {
-                    fish_each.speed.Y *= -1;
-                    fish_each.position += fish_each.speed * elapsedTime;
+                if (fishes[i].f_count >= 1 && fishes[i].f_count == 600)
+                {//累积到600就可以重新画出这条鱼
+                    fishes[i].f_count = 0;
+                    fishes[i].isCaught = false;
                 }
                 else
                 {
-                    if (fish_each.position.Y >= viewport.Height - fish_each.fish_pic.Height)
+                    if (fishes[i].f_count == 0)
                     {
-                        fish_each.speed.Y *= -1;
-                        fish_each.position += fish_each.speed * elapsedTime;
+                        fishes[i].f_count = 0;//do nothing
+                    }
+                    else
+                    {
+                        fishes[i].f_count++;
+                    }
+                }
+
+                if (fishes[i].position.X < 0)
+                {
+                    fishes[i].speed.X *= -1;
+                    fishes[i].position += fishes[i].speed * elapsedTime;
+                }
+                else
+                    if (fishes[i].position.X > viewport.Width - fishes[i].fish_pic.Width)
+                    {
+                        fishes[i].speed.X *= -1;
+                        fishes[i].position += fishes[i].speed * elapsedTime;
+                    }
+
+                if (fishes[i].position.Y < 0)
+                {
+                    fishes[i].speed.Y *= -1;
+                    fishes[i].position += fishes[i].speed * elapsedTime;
+                }
+                else
+                {
+                    if (fishes[i].position.Y >= viewport.Height - fishes[i].fish_pic.Height)
+                    {
+                        fishes[i].speed.Y *= -1;
+                        fishes[i].position += fishes[i].speed * elapsedTime;
                     }
                 }
 
                 //捕到鱼了
-                if ((logoPosition.X - fish_each.position.X) >= -logo.Width && (logoPosition.X - fish_each.position.X) <= fish_each.fish_pic.Width && (logoPosition.Y - fish_each.position.Y) >= -logo.Height && (logoPosition.Y - fish_each.position.Y) <= fish_each.fish_pic.Height)
+                if ((logoPosition.X - fishes[i].position.X) >= -logo.Width && (logoPosition.X - fishes[i].position.X) <= fishes[i].fish_pic.Width && (logoPosition.Y - fishes[i].position.Y) >= -logo.Height && (logoPosition.Y - fishes[i].position.Y) <= fishes[i].fish_pic.Height)
                 {//捕到鱼了
-                    fish_each.position.X = logoPosition.X + logo.Width / 2;
-                    fish_each.position.Y = logoPosition.Y + logo.Height / 2;
-                    SoundEffectInstance re = soundEffect.CreateInstance();
-                    fish_each.isCaught = true;//将捕到的鱼标记为true
-                    fishes.Remove(fish_each);//移除捕到的鱼
+                    fishes[i].position.X = logoPosition.X + logo.Width / 2;
+                    fishes[i].position.Y = logoPosition.Y + logo.Height / 2;
+                    //SoundEffectInstance re = soundEffect.CreateInstance();
+                    fishes[i].isCaught = true;//将捕到的鱼标记为true
                     fishCount++;
-                    re.Play();
-                    re.Pause();
-
+                    fishes[i].position = new Vector2(rand.Next(0, 480), rand.Next(0, 800));
+                    fishes[i].f_count++;
                 }
                 else
                 {//没捕到鱼
@@ -252,18 +299,13 @@ namespace CatchingFish
                         this.lastCount++;
                         if (this.lastCount > 10)
                         {//15帧之后换一次方向
-                            fish_each.speed = new Vector2(rand.Next(-480, 480), rand.Next(-800, 800));
+                            fishes[i].speed = new Vector2(rand.Next(-480, 480), rand.Next(-800, 800));
                             this.lastCount = 0;
                         }
 
-                        fish_each.position += fish_each.speed * elapsedTime;
+                        fishes[i].position += fishes[i].speed * elapsedTime;
                         this.count = 0;
                     }
-                }
-
-                if (fishes.Count() < 10)
-                {
-                    fishes.Add(new Fish(rand.Next(0, 480), rand.Next(0, 800), false));
                 }
 
             }
@@ -307,23 +349,51 @@ namespace CatchingFish
             GraphicsDevice.Clear(Color.White);
 
             // TODO: 在此处添加绘图代码
+			base.Draw(gameTime);
+            spriteBatch.Begin();
+			
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
 
-            base.Draw(gameTime);
-            spriteBatch.Begin();
+            
             spriteBatch.Draw(logo, logoPosition, Color.White);
-            foreach(Fish each in fishes)
+            for (int i = 0; i < 8; i++)
             {
-                if (!each.isCaught)
+                if (!fishes[i].isCaught)
                 {
-                    spriteBatch.Draw(each.fish_pic, each.position, each.color);
+                    spriteBatch.Draw(fishes[i].fish_pic, fishes[i].position, fishes[i].color);
                 }
-                
+                /*else
+                {
+                    spriteBatch.DrawString(scoreFont, "+1", new Vector2(logoPosition.X + 10, logoPosition.Y - 10), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+                }*/
+
+            }
+            spriteBatch.DrawString(scoreFont, "Fishes caught: " + fishCount, new Vector2(10, 10), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+
+            spriteBatch.End();
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            //save the game state
+#if WINDOWS_PHONE
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+            //open isolated storage, and write the savefile.
+            IsolatedStorageFileStream fs = null;
+            using (fs = savegameStorage.CreateFile("fish_amount"))
+            {
+                if (fs != null)
+                {
+                    //just overwrite the exsiting info for this game
+                    byte[] bytes_fish = System.BitConverter.GetBytes(fishCount);
+                    fs.Write(bytes_fish, 0, bytes_fish.Length);
+                }
             }
 
-            spriteBatch.DrawString(scoreFont, "捕到的鱼:" + fishCount, new Vector2(10, 10), Color.DarkBlue, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-            
-            spriteBatch.End();
+            base.OnExiting(sender, args);
         }
     }
 }
