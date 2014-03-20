@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsPhoneGame5", "WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5.csproj", "{042C23CB-F830-4E9C-92AF-A6B003D6A096}"
+EndProject
+Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "WindowsPhoneGame5Content", "WindowsPhoneGame5\WindowsPhoneGame5Content\WindowsPhoneGame5Content.contentproj", "{F1152B31-2A6D-4412-B978-EFD085226319}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Windows Phone = Debug|Windows Phone
+		Release|Windows Phone = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Debug|Windows Phone.Build.0 = Debug|Windows Phone
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Debug|Windows Phone.Deploy.0 = Debug|Windows Phone
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Release|Windows Phone.Build.0 = Release|Windows Phone
+		{042C23CB-F830-4E9C-92AF-A6B003D6A096}.Release|Windows Phone.Deploy.0 = Release|Windows Phone
+		{F1152B31-2A6D-4412-B978-EFD085226319}.Debug|Windows Phone.ActiveCfg = Debug|Windows Phone
+		{F1152B31-2A6D-4412-B978-EFD085226319}.Release|Windows Phone.ActiveCfg = Release|Windows Phone
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

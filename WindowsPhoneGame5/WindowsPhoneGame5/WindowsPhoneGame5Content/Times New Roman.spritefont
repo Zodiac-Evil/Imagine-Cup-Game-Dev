@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+此文件包含某个字体的 xml 描述，
+将由 XNA Framework 内容管道读取。
+请根据注释说明对游戏中的字体外观进行自定义，
+并更改可绘制的字符。
+-->
+<XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
+  <Asset Type="Graphics:FontDescription">
+
+    <!--
+    修改此字符串以更改将导入的字体。
+    -->
+    <FontName>Times New Roman</FontName>
+
+    <!--
+    “Size”是一个浮点值，以点数度量。修改此值可更改
+    字体大小。
+    -->
+    <Size>14</Size>
+
+    <!--
+    “Spacing”是一个浮点值，以像素数度量。修改此值可更改
+    字符之间的间距大小。
+    -->
+    <Spacing>0</Spacing>
+
+    <!--
+    UseKerning 用于控制字体的布局。如果该值为 true，则放置字符时
+    将使用字距调整信息。
+    -->
+    <UseKerning>true</UseKerning>
+
+    <!--
+    “Style”控制字体的样式。有效值为“Regular”、“Bold”、“Italic”和“Bold, Italic”，并且区分大小写。
+    
+    -->
+    <Style>Regular</Style>
+
+    <!--
+    如果对此行取消注释，则绘制或度量的文本包含字体中不包括的字符时，
+    默认字符将被替代。
+    -->
+    <!-- <DefaultCharacter>*</DefaultCharacter> -->
+
+    <!--
+    CharacterRegions 用于控制在字体中可以使用哪些字母。
+    将生成从 Start 到 End 的每个字符并使其可用于绘制。
+    默认范围从 32 (ASCII 空格)到 126 (~)，涵盖基本拉丁字符集。
+    字符顺序遵循 Unicode 标准。
+    有关详细信息，请参阅文档。
+    -->
+    <CharacterRegions>
+      <CharacterRegion>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
+      </CharacterRegion>
+    </CharacterRegions>
+  </Asset>
+</XnaContent>
