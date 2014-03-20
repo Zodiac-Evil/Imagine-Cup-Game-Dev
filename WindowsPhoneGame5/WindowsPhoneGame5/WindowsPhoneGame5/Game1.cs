@@ -19,6 +19,10 @@ namespace WindowsPhoneGame5
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        DateTimeOffset currentTime;
+
+        Boolean flat_01 = false;//是否画出下方白菜种子
+        Boolean flat_02 = false;//同上
 
         int carrot = 0;//收获的胡萝卜数目
         int Chinese_cabbage = 0;//收获的白菜数目
@@ -37,6 +41,8 @@ namespace WindowsPhoneGame5
 
             public Vector2 position;
             public Color color;
+
+            public DateTimeOffset offset, localTime, oughtTime;
 
             public fields(int id, float x, float y, Boolean isSaw, Boolean isRaped, Boolean isHarvested)
             {
@@ -123,6 +129,7 @@ namespace WindowsPhoneGame5
 
             // TODO: 在此处使用 this.Content 加载游戏内容
             //ContentManager cm = this.Content;
+            
 
             backgroundTexture = Content.Load<Texture2D>("background");
 
@@ -179,124 +186,77 @@ namespace WindowsPhoneGame5
             // TODO: 在此处添加更新逻辑
             Viewport view = graphics.GraphicsDevice.Viewport;
 
+            //获取当前时间
+            currentTime = new DateTimeOffset();
+
             //计算消耗时间
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float totalTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            TouchCollection touch = new TouchCollection();
 
-            touch = TouchPanel.GetState();
-
-            while (TouchPanel.IsGestureAvailable)
+            for (int j = 0; j < 8; j++)
             {
-                GestureSample gs = TouchPanel.ReadGesture();
-                switch (gs.GestureType)
+                if (Equals(field[j].oughtTime, currentTime))
                 {
-                    case GestureType.FreeDrag:
-                        for (int j = 0; j < 6; j++)
-                        {
-                            if (!field[j].isSaw)
-                            {//如果该块田未种植
-                                if (gs.Position.X > 100 && gs.Position.X < 180 && gs.Position.Y > 700 && gs.Position.Y < 780)
-                                {//如果手指将白菜种子所在区域按住
-                                    position_01 = gs.Position;
+                    field[j].isRaped = true;
 
-                                    if (position_01.X > field[j].position.X && position_01.X < field[j].position.X + field[j].place.Width && position_01.Y > field[j].position.Y && position_01.Y < field[j].position.Y + field[j].place.Height)
-                                    {//如果手指进行拖动并降落在某块田区域
-                                        //田高亮显示
-                                        field[j].color = Color.Yellow;
+                }
+            }
 
-                                        if (gs.GestureType == GestureType.DragComplete)
-                                        {//手指松开，开始种植白菜种子
-                                            field[j].isSaw = true;
-                                            field[j].type = 1;
-                                            position_01 = new Vector2(100, 700);
-                                        }//end if
-                                    }//end if
+            TouchCollection touchCollection = TouchPanel.GetState();
+            foreach (TouchLocation tl in touchCollection)
+            {
+                if (tl.State == TouchLocationState.Pressed)
+                {
+                    if (tl.Position.X >= 100 && tl.Position.X <= 180 && tl.Position.Y >= 700 && tl.Position.Y <= 780 && tl.State == TouchLocationState.Released)
+                    {//如果点按了白菜种子
+                        flat_01 = true;
 
-                                    if (gs.GestureType == GestureType.DragComplete)
-                                    {//如果没有拖到田里
-                                        position_01 = new Vector2(100, 700);
-                                    }//end if
-                                }//end if
+                        for (int i = 0; i < 6; i++)
+                        {//对于每一块田
+                            if (!field[i].isSaw)
+                            {
+                                field[i].color = Color.Yellow;
 
-                                if (gs.Position.X > 380 && gs.Position.X < 460 && gs.Position.Y > 700 && gs.Position.Y < 780)
-                                {//如果手指将胡萝卜种子所在区域按住
-                                    position_02 = gs.Position;
-
-                                    if (position_02.X > field[j].position.X && position_02.X < field[j].position.X + field[j].place.Width && position_02.Y > field[j].position.Y && position_02.Y < field[j].position.Y + field[j].place.Height)
-                                    {//如果手指进行拖动并降落在某块田区域
-                                        //田高亮显示,有空找代码吧-_-
-                                        field[j].color = Color.Yellow;
-
-                                        if (gs.GestureType == GestureType.DragComplete)
-                                        {//手指松开,开始种植胡萝卜种子
-                                            field[j].isSaw = true;
-                                            field[j].type = 2;
-                                            position_02 = new Vector2(380, 700);
-                                        }//end if
-                                    }//end if
-
-                                    if (gs.GestureType == GestureType.DragComplete)
-                                    {
-                                        position_02 = new Vector2(380, 700);
-                                    }
-                                }//end if
-
-                            }//end if
-                            else
-                            {//如果该田已种植
-                                if (gs.Position.X > 100 && gs.Position.X < 180 && gs.Position.Y > 700 && gs.Position.Y < 780)
-                                {//按住了白菜种子
-                                    position_01 = gs.Position;
-
-                                    if (gs.GestureType == GestureType.DragComplete)
-                                    {
-                                        position_01 = new Vector2(100, 700);
-                                    }
-                                }
-                                if (gs.Position.X > 380 && gs.Position.X < 460 && gs.Position.Y > 700 && gs.Position.Y < 780)
-                                {//如果按住了胡萝卜种子
-                                    position_02 = gs.Position;
-
-                                    if (gs.GestureType == GestureType.DragComplete)
-                                    {
-                                        position_02 = new Vector2(380, 700);
+                                if (tl.State == TouchLocationState.Pressed)
+                                {
+                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width)
+                                    {//按住了某一块田
+                                        field[i].isSaw = true;
+                                        field[i].type = 1;
+                                        //获取手机系统时间开始计时60分钟
+                                        field[i].offset = DateTimeOffset.UtcNow;
+                                        field[i].localTime = field[i].offset.ToLocalTime();
+                                        field[i].oughtTime = field[i].localTime.AddMinutes(60);
+                                        
+                                        field[i].color = Color.Green;
+                                        flat_01 = false;
                                     }
                                 }
                             }
-                        }//end for
-                        break;
-                    case GestureType.Tap:
-                        for (int k = 0; k < 6; k++)
-                        {
-                            if (gs.Position.X > 400 && gs.Position.X < 400 + harvest.Width && gs.Position.Y > 20 && gs.Position.Y < 20 + harvest.Height)
-                            {//如果点按了收获按钮
-                                //soundEffect.play();
-                                if (field[k].isRaped)
-                                {
-                                    field[k].isSaw = false;
-                                    field[k].isRaped = false;
-                                    if (field[k].type == 1)
-                                    {//收获白菜一株
-                                        addChinese_cabbage();
-                                        field[k].isHarvested = true;
-                                    }//end if
-                                    if (field[k].type == 2)
-                                    {//收获胡萝卜一株
-                                        addCarrot();
-                                        field[k].isHarvested = true;
-                                    }//end if
-                                }//end if
-                            }//end if
-                        }//end for
-
-                        if (gs.Position.X > 10 && gs.Position.X < 40 && gs.Position.Y > 20 && gs.Position.Y < 40)
-                        {//点按返回按钮
-
                         }
-                        break;
+                    }
+                    if (tl.Position.X >= 380 && tl.Position.X <= 460 && tl.Position.Y >= 700 && tl.Position.Y <= 780 && tl.State == TouchLocationState.Released)
+                    {//如果点按了胡萝卜种子
+                        flat_02 = true;
+                    }
+
+                    if (tl.Position.X >= 400 && tl.Position.X <= 400 + harvest.Width && tl.Position.Y >= 20 && tl.Position.Y <= 20 + harvest.Height)
+                    {//如果点按收割按钮
+                        if (tl.State == TouchLocationState.Released)
+                        {
+                            for (int i = 0; i < 8; i++)
+                            {
+                                if (field[i].isRaped)
+                                {
+                                    field[i].isHarvested = true;
+                                    field[i].isSaw = false;//标记为未播种，可以播种
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
             base.Update(gameTime);
         }
 
@@ -309,7 +269,7 @@ namespace WindowsPhoneGame5
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: 在此处添加绘图代码
-
+            base.Draw(gameTime);
             
             spriteBatch.Begin();
 
@@ -366,11 +326,28 @@ namespace WindowsPhoneGame5
             }//end forfield[j]
 
             //画出种子图片
-            spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Yellow);
-            spriteBatch.Draw(seed_carrot, position_02, Color.Yellow);
+            if (flat_01)
+            {
+                spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Yellow);
+            }
+            else
+            {
+                spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Green);
+            }
+
+            if (flat_02)
+            {
+                spriteBatch.Draw(seed_carrot, position_02, Color.Yellow);
+            }
+            else
+            {
+                spriteBatch.Draw(seed_carrot, position_02, Color.Green);
+            }
+
+            
 
             spriteBatch.End();
-            base.Draw(gameTime);
+            
         }
 
         public void addCarrot()
