@@ -21,6 +21,7 @@ namespace CatchingFish
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
         Accelerometer accelerometer;
         public static Random rand = new Random();
 
@@ -79,8 +80,20 @@ namespace CatchingFish
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            this.graphics.IsFullScreen = true;
+
             graphics.PreferredBackBufferWidth = 480;
             graphics.PreferredBackBufferHeight = 800;
+
+            fishes[0] = new Fish(20, 20, false);
+            fishes[1] = new Fish(200, 100, false);
+            fishes[2] = new Fish(100, 480, false);
+            fishes[3] = new Fish(50, 400, false);
+            fishes[4] = new Fish(200, 40, false);
+            fishes[5] = new Fish(200, 400, false);
+            fishes[6] = new Fish(287, 180, false);
+            fishes[7] = new Fish(160, 280, false);
 
             // Windows Phone 的默认帧速率为 30 fps。
             TargetElapsedTime = TimeSpan.FromTicks(33333);
@@ -98,14 +111,7 @@ namespace CatchingFish
         protected override void Initialize()
         {
             // TODO: 在此处添加初始化逻辑
-            fishes[0] = new Fish(20, 20, false);
-            fishes[1] = new Fish(200, 700, false);
-            fishes[2] = new Fish(100, 480, false);
-            fishes[3] = new Fish(50, 400, false);
-            fishes[4] = new Fish(200, 40, false);
-            fishes[5] = new Fish(200, 400, false);
-            fishes[6] = new Fish(287, 180, false);
-            fishes[7] = new Fish(160, 280, false);
+            
 
             //open isolated storage, and load data from the savefile if it exists.
 #if WINDOWS_PHONE
@@ -116,7 +122,7 @@ namespace CatchingFish
             {
                 if (savegameStorage.FileExists("fish_amount"))
                 {
-                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.Open))
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.Open, System.IO.FileAccess.Read))
                     {
                         if (fs != null)
                         {
@@ -125,7 +131,7 @@ namespace CatchingFish
                             int count = fs.Read(saveBytes, 0, 4);
                             if (count > 0)
                             {
-                                fishCount = System.BitConverter.ToInt32(saveBytes, 0);
+                                this.fishCount = System.BitConverter.ToInt32(saveBytes, 0);
                             }
                         }
                     }
@@ -144,7 +150,7 @@ namespace CatchingFish
                 //设置感应器检测间隔 单位是毫秒 （The default value is 2 milliseconds.[MSDN]）
                 accelerometer.TimeBetweenUpdates = TimeSpan.FromMilliseconds(20);
 
-                //[个人理解] 添加监听事件的回调函数 （accelerometer_CurrentValueChanged),
+                //[他人理解] 添加监听事件的回调函数 （accelerometer_CurrentValueChanged),
                 //          即每次检测的到的结果交给此方法进行处理（本例中用来更新四个方向指示属性）
                 accelerometer.ReadingChanged += new EventHandler<AccelerometerReadingEventArgs>(AccelerometerReadingChanged);
             }
@@ -181,7 +187,7 @@ namespace CatchingFish
             scoreFont = Content.Load<SpriteFont>("Times New Roman");
             logo = Content.Load<Texture2D>("cat_net");
             Viewport viewport = graphics.GraphicsDevice.Viewport;
-            logoPosition = new Vector2((viewport.Width - logo.Width)/2, (viewport.Height - logo.Height)/2);
+            logoPosition = new Vector2((viewport.Width - logo.Width)/2, viewport.Height - logo.Height);
 
             for (int i = 0; i < 8; i++)
             {
@@ -220,8 +226,10 @@ namespace CatchingFish
             // 允许游戏退出
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
+                
 
             // TODO: 在此处添加更新逻辑
+
             
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float totalTime = (float)gameTime.TotalGameTime.TotalSeconds;
@@ -230,7 +238,7 @@ namespace CatchingFish
 
             if (totalTime == 60)
             {
-                Exit();
+                this.Exit();
             }
 
             //鱼不能超过边界
@@ -309,9 +317,6 @@ namespace CatchingFish
                 }
 
             }
-            
-
-            
 
 
             //捕鱼网不能超过边界
@@ -338,7 +343,27 @@ namespace CatchingFish
                     logoPosition.Y = viewport.Height - logo.Height;
                     logoVelocity.Y = 0;
                 }
+
+            //save the game state
+#if WINDOWS_PHONE
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+            //open isolated storage, and write the savefile.
+            IsolatedStorageFileStream fs = null;
+            using (fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+            {//文件中的值应该不断更新
+                if (fs != null)
+                {
+                    //just overwrite the exsiting info for this game
+                    byte[] bytes_fish = System.BitConverter.GetBytes(this.fishCount);
+                    fs.Write(bytes_fish, 0, bytes_fish.Length);
+                }
+            }
         }
+
+        
 
         /// <summary>
         /// 当游戏该进行自我绘制时调用此项。
@@ -383,17 +408,80 @@ namespace CatchingFish
 #endif
             //open isolated storage, and write the savefile.
             IsolatedStorageFileStream fs = null;
-            using (fs = savegameStorage.CreateFile("fish_amount"))
-            {
+            using (fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+            {//文件中的值应该不断更新
                 if (fs != null)
                 {
                     //just overwrite the exsiting info for this game
-                    byte[] bytes_fish = System.BitConverter.GetBytes(fishCount);
+                    byte[] bytes_fish = System.BitConverter.GetBytes(this.fishCount);
                     fs.Write(bytes_fish, 0, bytes_fish.Length);
                 }
             }
 
             base.OnExiting(sender, args);
+        }
+
+        public void substract_fish(int amount)
+        {//从独立存储文件中减去一定数目的鱼，因为进食的原因,(后期可以考死亡),该方法给LSM调用
+            //open isolated storage, and load data from the savefile if it exists.
+#if WINDOWS_PHONE
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+#else
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain())
+#endif
+            {
+                if (savegameStorage.FileExists("fish_amount"))
+                {
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.Open, System.IO.FileAccess.ReadWrite))
+                    {
+                        if (fs != null)
+                        {
+                            //Reload the saved high-score data.
+                            byte[] saveBytes = new byte[4];
+                            int count = fs.Read(saveBytes, 0, 4);
+                            if (count > 0)
+                            {
+                                int temp = System.BitConverter.ToInt32(saveBytes, 0);
+                                temp -= amount;//不做检错处理，LSM必须保证吃掉的鱼不会超过已捕获的鱼
+
+                                //将更新后的值写入独立存储空间
+                                byte[] newSaveBytes = System.BitConverter.GetBytes(temp);
+                                fs.Write(newSaveBytes, 0, newSaveBytes.Length);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public int getFish()
+        {
+            //open isolated storage, and load data from the savefile if it exists.
+#if WINDOWS_PHONE
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication())
+#else
+            using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain())
+#endif
+            {
+                if (savegameStorage.FileExists("fish_amount"))
+                {
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fish_amount", System.IO.FileMode.Open, System.IO.FileAccess.ReadWrite))
+                    {
+                        if (fs != null)
+                        {
+                            //Reload the saved high-score data.
+                            byte[] saveBytes = new byte[4];
+                            int count = fs.Read(saveBytes, 0, 4);
+                            if (count > 0)
+                            {
+                                return System.BitConverter.ToInt32(saveBytes, 0);
+                            }
+                        }
+                        return -2;//标志创建文件流失败
+                    }
+                }
+                return -1;//标志文件损坏或不存在
+            }
         }
     }
 }

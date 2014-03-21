@@ -20,9 +20,9 @@ C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\
 bin\Windows Phone\Debug\
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\AppManifest.xaml
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml.g
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\AppManifest.xaml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml.g
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml
 bin\Windows Phone\Debug\
