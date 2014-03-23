@@ -11,15 +11,6 @@
       <Time>2014-03-20T12:08:59.5009123+08:00</Time>
     </Item>
     <Item>
-      <Source>Times New Roman.spritefont</Source>
-      <Name>Times New Roman</Name>
-      <Importer>FontDescriptionImporter</Importer>
-      <Processor>FontDescriptionProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\Times New Roman.xnb</Output>
-      <Time>2014-03-20T14:33:30.9959135+08:00</Time>
-    </Item>
-    <Item>
       <Source>backwards.png</Source>
       <Name>backwards</Name>
       <Importer>TextureImporter</Importer>
@@ -56,15 +47,6 @@
       <Time>2014-03-20T12:35:35.863817+08:00</Time>
     </Item>
     <Item>
-      <Source>seed_carrot.png</Source>
-      <Name>seed_carrot</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\seed_carrot.xnb</Output>
-      <Time>2014-03-20T14:13:22.1023683+08:00</Time>
-    </Item>
-    <Item>
       <Source>seed_carrot_big.png</Source>
       <Name>seed_carrot_big</Name>
       <Importer>TextureImporter</Importer>
@@ -72,15 +54,6 @@
       <Options>None</Options>
       <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\seed_carrot_big.xnb</Output>
       <Time>2014-03-20T12:35:35.863817+08:00</Time>
-    </Item>
-    <Item>
-      <Source>seed_Chinese_cabbage.png</Source>
-      <Name>seed_Chinese_cabbage</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\seed_Chinese_cabbage.xnb</Output>
-      <Time>2014-03-20T14:13:22.2616103+08:00</Time>
     </Item>
     <Item>
       <Source>seed_Chinese_cabbage_big.png</Source>
@@ -99,6 +72,33 @@
       <Options>None</Options>
       <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\solid.xnb</Output>
       <Time>2014-03-20T12:35:35.863817+08:00</Time>
+    </Item>
+    <Item>
+      <Source>seed_carrot.png</Source>
+      <Name>seed_carrot</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\seed_carrot.xnb</Output>
+      <Time>2014-03-20T14:13:22.1023683+08:00</Time>
+    </Item>
+    <Item>
+      <Source>seed_Chinese_cabbage.png</Source>
+      <Name>seed_Chinese_cabbage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\seed_Chinese_cabbage.xnb</Output>
+      <Time>2014-03-20T14:13:22.2616103+08:00</Time>
+    </Item>
+    <Item>
+      <Source>Times New Roman.spritefont</Source>
+      <Name>Times New Roman</Name>
+      <Importer>FontDescriptionImporter</Importer>
+      <Processor>FontDescriptionProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\Content\Times New Roman.xnb</Output>
+      <Time>2014-03-20T14:33:30.9959135+08:00</Time>
     </Item>
     <Item>
       <Source>Windows Ding.wav</Source>

@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -20,44 +21,44 @@ namespace WindowsPhoneGame5
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        DateTimeOffset currentTime;
 
-        Boolean flat_01 = false;//是否画出下方白菜种子
-        Boolean flat_02 = false;//同上
+        int flat_01 = 0;//是否画出下方白菜种子
+        int flat_02 = 0;//同上
 
         int carrot = 0;//收获的胡萝卜数目
         int Chinese_cabbage = 0;//收获的白菜数目
 
-        class fields
+        public class fields
         {//每块田都是一个对象
             public int id;
 
-            public int type;//1代表白菜，2代表胡萝卜
+            public int type;//1代表白菜，2代表胡萝卜，0代表没有
 
             public Texture2D place;
 
-            public Boolean isRaped;//成熟了
-            public Boolean isSaw;//播种了
-            public Boolean isHarvested;//收割了
+            public int isRipe;//成熟了
+            public int isSaw;//播种了
+            public int isHarvested;//收割了
 
             public Vector2 position;
             public Color color;
 
-            public DateTimeOffset offset, localTime;
-            public String oughtTime;
+            public int tick;
 
-            public fields(int id, float x, float y, Boolean isSaw, Boolean isRaped, Boolean isHarvested)
+            public fields(int id, float x, float y, int isSaw, int isRipe, int isHarvested)
             {
                 this.id = id;
                 this.position = new Vector2(x, y);
                 this.isSaw = isSaw;
-                this.isRaped = isRaped;
+                this.isRipe = isRipe;
                 this.isHarvested = isHarvested;
+                this.tick = 0;
+                this.type = 0;
                 this.color = Color.Green;
             }
         }
 
-        fields[] field = new fields[6];
+        public fields[] field = new fields[6];
 
         public Texture2D solid;//泥土
 
@@ -90,15 +91,13 @@ namespace WindowsPhoneGame5
             Content.RootDirectory = "Content";
             this.graphics.IsFullScreen = true;
 
+            TouchPanel.EnabledGestures = GestureType.Tap;
+
             graphics.PreferredBackBufferWidth = 480;
             graphics.PreferredBackBufferHeight = 800;
 
-            position_01 = new Vector2(100, 700);
-            position_02 = new Vector2(380, 700);
-
-            
-
-            TouchPanel.EnabledGestures = GestureType.FreeDrag | GestureType.Tap | GestureType.DragComplete | GestureType.Hold;
+            position_01 = new Vector2(80, 710);
+            position_02 = new Vector2(320, 710);
 
             // Windows Phone 的默认帧速率为 30 fps。
             TargetElapsedTime = TimeSpan.FromTicks(333333);
@@ -116,6 +115,13 @@ namespace WindowsPhoneGame5
         protected override void Initialize()
         {
             // TODO: 在此处添加初始化逻辑
+            field[0] = new fields(1, 50, 50, 0, 0, 0);
+            field[1] = new fields(3, 50, 275, 0, 0, 0);
+            field[2] = new fields(2, 290, 50, 0, 0, 0);
+            field[3] = new fields(4, 290, 275, 0, 0, 0);
+            field[4] = new fields(5, 50, 500, 0, 0, 0);
+            field[5] = new fields(6, 290, 500, 0, 0, 0);
+
             //打开本地存储独立空间，加载存在文件中的数据
 #if WINDOWS_PHONE
             using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication())
@@ -123,27 +129,130 @@ namespace WindowsPhoneGame5
             using (IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain())
 #endif
             {
-                if (savegameStorage.FileExists("fields"))
+                if (savegameStorage.FileExists("cabbage"))
                 {
-                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("fields", System.IO.FileMode.Open))
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("cabbage", System.IO.FileMode.Open, System.IO.FileAccess.Read))
                     {
                         if (fs != null)
                         {
                             //重载存储的最高记录
-                            byte[] saveBytes_carrot = new byte[4];
                             byte[] saveBytes_cabbage = new byte[4];
+                            int count_cabbage = fs.Read(saveBytes_cabbage, 0, 4);
+                            if (count_cabbage > 0)
+                            {
+                                this.Chinese_cabbage = System.BitConverter.ToInt32(saveBytes_cabbage, 0);
+                            }
+                        }
+                    }
+                }
+
+                if (savegameStorage.FileExists("carrot"))
+                {//读取独立存储空间中的胡萝卜数目
+                    using (IsolatedStorageFileStream fs = savegameStorage.OpenFile("carrot", System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                    {
+                        if (fs != null)
+                        {
+                            byte[] saveBytes_carrot = new byte[4];
 
                             int count_carrot = fs.Read(saveBytes_carrot, 0, 4);
-                            int count_cabbage = fs.Read(saveBytes_cabbage, 0, 4);
                             if (count_carrot > 0)
                             {
-                                carrot = System.BitConverter.ToInt32(saveBytes_carrot, 0);
+                                this.carrot = System.BitConverter.ToInt32(saveBytes_carrot, 0);
+                            }
+                        }
+
+                    }
+                }
+
+                for (int i = 1; i <= 6; i++)
+                {
+                    String str_01 = "-1".Insert(0, i.ToString());
+                    if (savegameStorage.FileExists(str_01))
+                    {
+                        using (IsolatedStorageFileStream fs_01 = savegameStorage.OpenFile(str_01, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            if (fs_01 != null)
+                            {
+                                //重载该块田的第一个属性值
+                                byte[] saw = new byte[4];
+                                int sa = fs_01.Read(saw, 0, 4);
+                                if (sa > 0)
+                                {//载入当前变量中
+                                    this.field[i - 1].isSaw = System.BitConverter.ToInt32(saw, 0);
+                                }
+                            }
+                        }
+                    }
+                    String str_02 = "-2".Insert(0, i.ToString());
+                    if (savegameStorage.FileExists(str_02))
+                    {
+                        using (IsolatedStorageFileStream fs_02 = savegameStorage.OpenFile(str_02, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            if (fs_02 != null)
+                            {
+                                //重载该块田的第二个属性值
+                                byte[] ripe = new byte[4];
+                                int ri = fs_02.Read(ripe, 0, 4);
+                                if (ri > 0)
+                                {//载入当前变量中
+                                    this.field[i - 1].isRipe = System.BitConverter.ToInt32(ripe, 0);
+                                }
+                            }
+                        }
+                    }
+                    String str_03 = "-3".Insert(0, i.ToString());
+                    if (savegameStorage.FileExists(str_03))
+                    {
+                        using (IsolatedStorageFileStream fs_03 = savegameStorage.OpenFile(str_03, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            if (fs_03 != null)
+                            {
+                                //重载该块田的第三个属性值
+                                byte[] harvested = new byte[4];
+                                int ha = fs_03.Read(harvested, 0, 4);
+                                if (ha > 0)
+                                {//载入当前变量中
+                                    this.field[i - 1].isHarvested = System.BitConverter.ToInt32(harvested, 0);
+                                }
+                            }
+                        }
+                    }
+                    String str_04 = "-4".Insert(0, i.ToString());
+                    if (savegameStorage.FileExists(str_04))
+                    {
+                        using (IsolatedStorageFileStream fs_04 = savegameStorage.OpenFile(str_04, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            if (fs_04 != null)
+                            {
+                                //重载该块田的第四个属性值
+                                byte[] tickCount = new byte[4];
+                                int ti = fs_04.Read(tickCount, 0, 4);
+                                if (ti > 0)
+                                {//载入当前变量中
+                                    this.field[i - 1].tick = System.BitConverter.ToInt32(tickCount, 0);
+                                }
+                            }
+                        }
+                    }
+                    String str_05 = "-5".Insert(0, i.ToString());
+                    if (savegameStorage.FileExists(str_05))
+                    {
+                        using (IsolatedStorageFileStream fs_05 = savegameStorage.OpenFile(str_05, System.IO.FileMode.Open, System.IO.FileAccess.Read))
+                        {
+                            if (fs_05 != null)
+                            {
+                                //重载该块田的第五个属性值
+                                byte[] type = new byte[4];
+                                int ty = fs_05.Read(type, 0, 4);
+                                if (ty > 0)
+                                {//载入当前变量中
+                                    this.field[i - 1].type = System.BitConverter.ToInt32(type, 0);
+                                }
                             }
                         }
                     }
                 }
             }
-
             base.Initialize();
         }
 
@@ -164,12 +273,7 @@ namespace WindowsPhoneGame5
 
             storageFont = Content.Load<SpriteFont>("Times New Roman");
 
-            field[0] = new fields(1, 50, 50, false, false, false);
-            field[1] = new fields(2, 290, 50, false, false, false);
-            field[2] = new fields(3, 50, 275, false, false, false);
-            field[3] = new fields(4, 290, 275, false, false, false);
-            field[4] = new fields(5, 50, 500, false, false, false);
-            field[5] = new fields(6, 290, 500, false, false, false);
+            
 
             for (int i = 0; i < 6; i++)
             {
@@ -215,96 +319,123 @@ namespace WindowsPhoneGame5
             // TODO: 在此处添加更新逻辑
             Viewport view = graphics.GraphicsDevice.Viewport;
 
-            //获取当前时间
-            currentTime = new DateTimeOffset();
-
             //计算消耗时间
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float totalTime = (float)gameTime.TotalGameTime.TotalSeconds;
 
-            for (int j = 0; j < 8; j++)
+            for (int j = 0; j < 6; j++)
             {
                 //从本地存储的数据转换为内存中的数组
-                //提取之前储存在本地标号为j的时间戳，转换为DateTimeOffset格式
-                
+                //一定要改变当前数组的值
 
-                if (Equals(field[j].oughtTime, currentTime))
+                if (field[j].tick >= 1)
                 {
-                    field[j].isRaped = true;
+                    if (field[j].tick == 30 * 60)
+                    {//如果游戏运行了一分钟,暂不支持后台计时-_-!!!
+                        this.field[j].tick = 0;//停止计时，已成熟
+                        this.field[j].isRipe = 1;
+                    }
+                    else if (field[j].tick < 30 * 60)
+                    {
+                        this.field[j].isRipe = 0;
+                        this.field[j].tick++;
+                    }
                 }
             }
 
-            TouchCollection touchCollection = TouchPanel.GetState();
-            foreach (TouchLocation tl in touchCollection)
+            if (flat_01 == 0 && flat_02 == 0)
             {
-                if (tl.State == TouchLocationState.Pressed)
+                for (int i = 0; i < 6; i++)
                 {
-                    if (tl.Position.X >= 100 && tl.Position.X <= 180 && tl.Position.Y >= 700 && tl.Position.Y <= 780 && tl.State == TouchLocationState.Released)
-                    {//如果点按了白菜种子
-                        flat_01 = true;
+                    field[i].color = Color.Green;
+                }
+            }
+
+            while (TouchPanel.IsGestureAvailable)
+            {
+                GestureSample gs = TouchPanel.ReadGesture();
+                switch (gs.GestureType)
+                {
+                    case GestureType.Tap:
+                        if (gs.Position.X >= 80 && gs.Position.X <= 160 && gs.Position.Y >= 710 && gs.Position.Y <= 790)
+                        {//如果点按了白菜种子
+                            if (flat_01 == 1)
+                            {
+                                flat_01 = 0;
+                            }
+                            else if (flat_01 == 0)
+                            {
+                                flat_01 = 1;
+                                if (flat_02 == 1)
+                                {//如果另一个种子亮着就将其变暗
+                                    flat_02 = 0;
+                                }
+                                for (int i = 0; i < 6; i++)
+                                {//对于每一块田
+                                    if (0 == field[i].isSaw)
+                                    {
+                                        field[i].color = Color.Yellow;
+                                    }//end if
+                                }//end for
+                            }
+                        }//end if
+
+                        else if (gs.Position.X >= 320 && gs.Position.X <= 400 && gs.Position.Y >= 710 && gs.Position.Y <= 790)
+                        {//如果点按了胡萝卜种子
+                            if (flat_02 == 1)
+                            {
+                                flat_02 = 0;
+                            }
+                            else if (flat_02 == 0)
+                            {
+                                flat_02 = 1;
+                                if (flat_01 == 1)
+                                {
+                                    flat_01 = 0;
+                                }
+                                for (int i = 0; i < 6; i++)
+                                {//对于每一块田
+                                    if (0 == field[i].isSaw)
+                                    {
+                                        field[i].color = Color.Yellow;
+                                    }//end if
+                                }//end for
+                            }
+                        }//end if
 
                         for (int i = 0; i < 6; i++)
-                        {//对于每一块田
-                            if (!field[i].isSaw)
-                            {
-                                field[i].color = Color.Yellow;
-
-                                if (tl.State == TouchLocationState.Pressed)
-                                {
-                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width && tl.State == TouchLocationState.Released)
-                                    {//按住了某一块田
-                                        field[i].isSaw = true;
-                                        field[i].type = 1;
-                                        //获取手机系统时间开始计时60分钟
-                                        field[i].offset = DateTimeOffset.UtcNow;
-                                        field[i].localTime = field[i].offset.ToLocalTime();
-                                        field[i].oughtTime = field[i].localTime.AddMinutes(60).ToString();
-                                        //把这块田的所有最新信息(不是此时，而是退出游戏时)存到手机里，按照标号i
-
-                                        field[i].color = Color.Green;
-                                        flat_01 = false;
-                                    }//end if
-                                }//end if
-                            }//end if
-                        }//end for
-                    }//end if
-                    if (tl.Position.X >= 380 && tl.Position.X <= 460 && tl.Position.Y >= 700 && tl.Position.Y <= 780 && tl.State == TouchLocationState.Released)
-                    {//如果点按了胡萝卜种子
-                        flat_02 = true;
-
-                        for (int i = 0; i < 6; i++)
-                        {//对于每一块田
-                            if (!field[i].isSaw)
-                            {
-                                field[i].color = Color.Yellow;
-
-                                if (tl.State == TouchLocationState.Pressed)
-                                {
-                                    if (tl.Position.X >= field[i].position.X && tl.Position.X <= field[i].position.X + field[i].place.Width && tl.State == TouchLocationState.Released)
-                                    {//按住了某一块田
-                                        field[i].isSaw = true;
-                                        field[i].type = 2;
-                                        //获取手机系统时间开始计时60分钟
-                                        field[i].offset = DateTimeOffset.UtcNow;
-                                        field[i].localTime = field[i].offset.ToLocalTime();
-                                        field[i].oughtTime = field[i].localTime.AddMinutes(60).ToString();
-                                        //把这块田的所有信息存到手机里，按照标号i
-
-                                        field[i].color = Color.Green;
-                                        flat_02 = false;
-                                    }//end if
-                                }//end if
-                            }//end if
-                        }//end for
-                    }//end if
-
-                    if (tl.Position.X >= 400 && tl.Position.X <= 400 + harvest.Width && tl.Position.Y >= 20 && tl.Position.Y <= 20 + harvest.Height)
-                    {//如果点按收割按钮
-                        if (tl.State == TouchLocationState.Released)
                         {
-                            for (int i = 0; i < 8; i++)
+                            if (gs.Position.X >= field[i].position.X && gs.Position.X <= field[i].position.X + field[i].place.Width && gs.Position.Y >= field[i].position.Y && gs.Position.Y <= field[i].position.Y + field[i].place.Height)
+                            {//按了某一块田
+                                if (field[i].color == Color.Yellow)
+                                {//如果该块田是高亮显示的
+                                    if (flat_01 == 1)
+                                    {
+                                        field[i].isSaw = 1;
+                                        field[i].type = 1;
+                                        field[i].color = Color.Green;
+                                        flat_01 = 0;
+                                        //开始计时
+                                        field[i].tick = 1;
+                                    }
+                                    else if (flat_02 == 1)
+                                    {
+                                        field[i].isSaw = 1;
+                                        field[i].type = 2;
+                                        field[i].color = Color.Green;
+                                        flat_02 = 0;
+                                        //开始计时
+                                        field[i].tick = 1;
+                                    }
+                                }
+                            }//end if
+                        }
+
+                        if (gs.Position.X >= 400 && gs.Position.X <= 400 + harvest.Width && gs.Position.Y >= 20 && gs.Position.Y <= 20 + harvest.Height)
+                        {//如果点按收割按钮
+                            for (int i = 0; i < 6; i++)
                             {
-                                if (field[i].isRaped)
+                                if (1 == field[i].isRipe)
                                 {
                                     if (field[i].type == 1)
                                     {//收获一株白菜
@@ -314,15 +445,68 @@ namespace WindowsPhoneGame5
                                     {//收获一根胡萝卜
                                         addCarrot();
                                     }
-
-                                    field[i].isHarvested = true;//标记为已收获
-                                    field[i].isSaw = false;//标记为未播种，可以播种
+                                    field[i].isHarvested = 1;//标记为已收获
+                                    field[i].isSaw = 0;//标记为未播种，可以播种
+                                    field[i].isRipe = 0;//标记为未成熟
+                                    field[i].type = 0;
+                                    field[i].tick = 0;//不计时
                                 }//end if
                             }//end for
                         }//end if
-                    }//end if
-                }//end if
-            }//end foreach
+                        break;
+                }
+            }
+
+            //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
+#if WINDOWS_PHONE
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+
+            //打开独立存储空间，写文件
+
+            using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+            {
+                IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
+                fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
+                fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
+                fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
+                fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
+                fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
+                fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
+
+                if (fs_carrot != null)
+                {
+                    //写数据
+                    byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
+                    fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
+
+                }
+                if (fs_cabbage != null)
+                {
+                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
+                    fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                }
+
+                for (int i = 0; i < 6; i++)
+                {
+                    if (fs[i][0] != null && fs[i][1] != null && fs[i][2] != null && fs[i][3] != null && fs[i][4] != null)
+                    {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
+                        byte[] saw = System.BitConverter.GetBytes(this.field[i].isSaw);
+                        byte[] ripe = System.BitConverter.GetBytes(this.field[i].isRipe);
+                        byte[] harvested = System.BitConverter.GetBytes(this.field[i].isHarvested);
+                        byte[] tickCount = System.BitConverter.GetBytes(this.field[i].tick);
+                        byte[] type = System.BitConverter.GetBytes(this.field[i].type);
+
+                        fs[i][0].Write(saw, 0, saw.Length);
+                        fs[i][1].Write(ripe, 0, ripe.Length);
+                        fs[i][2].Write(harvested, 0, harvested.Length);
+                        fs[i][3].Write(tickCount, 0, tickCount.Length);
+                        fs[i][4].Write(type, 0, type.Length);
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }
@@ -336,7 +520,7 @@ namespace WindowsPhoneGame5
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: 在此处添加绘图代码
-            base.Draw(gameTime);
+            
             
             spriteBatch.Begin();
 
@@ -351,20 +535,20 @@ namespace WindowsPhoneGame5
             spriteBatch.DrawString(storageFont, "Carrot: " + carrot, new Vector2(250, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
 
             //添加收割按钮
-            spriteBatch.Draw(harvest, new Vector2(410, 10), Color.White);
+            spriteBatch.Draw(harvest, new Vector2(420, 6), Color.White);
 
             //画出6块种植田
             for (int j = 0; j < 6; j++)
             {
-                if (!field[j].isSaw)
+                if (field[j].isSaw == 0)
                 {//如果未播种
                     spriteBatch.Draw(solid, field[j].position, field[j].color);
                 }
                 else
                 {
-                    if (field[j].isSaw)
+                    if (field[j].isSaw == 1)
                     {//如果播种了
-                        if (!field[j].isRaped)
+                        if (field[j].isRipe == 0)
                         {//如果播种了但没有成熟
                             if (field[j].type == 1)
                             {
@@ -375,10 +559,13 @@ namespace WindowsPhoneGame5
                             {
                                 spriteBatch.Draw(seed_carrot_big, field[j].position, field[j].color);
                             }
-
+                            if (field[j].type == 0)
+                            {
+                                spriteBatch.Draw(solid, field[j].position, field[j].color);
+                            }
                         }
-                        else
-                        {//如果成熟了
+                        else if (field[j].isRipe == 1)
+                        {
                             if (field[j].type == 1)
                             {
                                 spriteBatch.Draw(fruit_cabbage, field[j].position, field[j].color);
@@ -390,10 +577,10 @@ namespace WindowsPhoneGame5
                         }
                     }
                 }
-            }//end foreach
+            }//end for
 
             //画出种子图片
-            if (flat_01)
+            if (flat_01 == 1)
             {
                 spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Yellow);
             }
@@ -402,7 +589,7 @@ namespace WindowsPhoneGame5
                 spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Green);
             }
 
-            if (flat_02)
+            if (flat_02 == 1)
             {
                 spriteBatch.Draw(seed_carrot, position_02, Color.Yellow);
             }
@@ -414,6 +601,7 @@ namespace WindowsPhoneGame5
             
 
             spriteBatch.End();
+            base.Draw(gameTime);
             
         }
 
@@ -427,17 +615,46 @@ namespace WindowsPhoneGame5
 #endif
 
             //打开独立存储空间，写文件
-            IsolatedStorageFileStream fs = null;
-            using (fs = savegameStorage.CreateFile("fields"))
+
+            using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
             {
-                if (fs != null)
+                IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
+                fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
+                fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
+                fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
+                fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
+                fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
+                fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
+
+                if (fs_carrot != null)
                 {
                     //写数据
-                    byte[] bytes_carrot = System.BitConverter.GetBytes(carrot);//写入得到的胡萝卜数
-                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(Chinese_cabbage);//写入得到的白菜数
+                    byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
+                    fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
 
-                    fs.Write(bytes_carrot, 0, bytes_carrot.Length);
-                    fs.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                }
+                if (fs_cabbage != null)
+                {
+                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
+                    fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                }
+
+                for (int i = 0; i < 6; i++)
+                {
+                    if (fs[i][0] != null && fs[i][1] != null && fs[i][2] != null && fs[i][3] != null &&　fs[i][4] != null)
+                    {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
+                        byte[] saw = System.BitConverter.GetBytes(this.field[i].isSaw);
+                        byte[] ripe = System.BitConverter.GetBytes(this.field[i].isRipe);
+                        byte[] harvested = System.BitConverter.GetBytes(this.field[i].isHarvested);
+                        byte[] tickCount = System.BitConverter.GetBytes(this.field[i].tick);
+                        byte[] type = System.BitConverter.GetBytes(this.field[i].type);
+
+                        fs[i][0].Write(saw, 0, saw.Length);
+                        fs[i][1].Write(ripe, 0, ripe.Length);
+                        fs[i][2].Write(harvested, 0, harvested.Length);
+                        fs[i][3].Write(tickCount, 0, tickCount.Length);
+                        fs[i][4].Write(type, 0, type.Length);
+                    }
                 }
             }
 

@@ -361,6 +361,8 @@ namespace CatchingFish
                     fs.Write(bytes_fish, 0, bytes_fish.Length);
                 }
             }
+
+            base.Update(gameTime);
         }
 
         
