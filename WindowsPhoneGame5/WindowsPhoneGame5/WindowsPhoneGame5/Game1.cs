@@ -334,6 +334,57 @@ namespace WindowsPhoneGame5
                     {//如果游戏运行了一分钟,暂不支持后台计时-_-!!!
                         this.field[j].tick = 0;//停止计时，已成熟
                         this.field[j].isRipe = 1;
+
+                        //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
+#if WINDOWS_PHONE
+                        IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+
+                        //打开独立存储空间，写文件
+
+                        using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+                        {
+                            IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
+                            fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
+                            fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
+                            fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
+                            fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
+                            fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
+                            fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
+
+                            if (fs_carrot != null)
+                            {
+                                //写数据
+                                byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
+                                fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
+
+                            }
+                            if (fs_cabbage != null)
+                            {
+                                byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
+                                fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                            }
+
+                            for (int i = 0; i < 6; i++)
+                            {
+                                if (fs[i][0] != null && fs[i][1] != null && fs[i][2] != null && fs[i][3] != null && fs[i][4] != null)
+                                {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
+                                    byte[] saw = System.BitConverter.GetBytes(this.field[i].isSaw);
+                                    byte[] ripe = System.BitConverter.GetBytes(this.field[i].isRipe);
+                                    byte[] harvested = System.BitConverter.GetBytes(this.field[i].isHarvested);
+                                    byte[] tickCount = System.BitConverter.GetBytes(this.field[i].tick);
+                                    byte[] type = System.BitConverter.GetBytes(this.field[i].type);
+
+                                    fs[i][0].Write(saw, 0, saw.Length);
+                                    fs[i][1].Write(ripe, 0, ripe.Length);
+                                    fs[i][2].Write(harvested, 0, harvested.Length);
+                                    fs[i][3].Write(tickCount, 0, tickCount.Length);
+                                    fs[i][4].Write(type, 0, type.Length);
+                                }
+                            }
+                        }
                     }
                     else if (field[j].tick < 30 * 60)
                     {
@@ -428,6 +479,57 @@ namespace WindowsPhoneGame5
                                         field[i].tick = 1;
                                     }
                                 }
+
+                                //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
+#if WINDOWS_PHONE
+                                IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+
+                                //打开独立存储空间，写文件
+
+                                using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+                                {
+                                    IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
+                                    fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
+                                    fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
+                                    fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
+                                    fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
+                                    fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
+                                    fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
+
+                                    if (fs_carrot != null)
+                                    {
+                                        //写数据
+                                        byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
+                                        fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
+
+                                    }
+                                    if (fs_cabbage != null)
+                                    {
+                                        byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
+                                        fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                                    }
+
+                                    for (int j = 0; j < 6; j++)
+                                    {
+                                        if (fs[j][0] != null && fs[j][1] != null && fs[j][2] != null && fs[j][3] != null && fs[j][4] != null)
+                                        {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
+                                            byte[] saw = System.BitConverter.GetBytes(this.field[j].isSaw);
+                                            byte[] ripe = System.BitConverter.GetBytes(this.field[j].isRipe);
+                                            byte[] harvested = System.BitConverter.GetBytes(this.field[j].isHarvested);
+                                            byte[] tickCount = System.BitConverter.GetBytes(this.field[j].tick);
+                                            byte[] type = System.BitConverter.GetBytes(this.field[j].type);
+
+                                            fs[j][0].Write(saw, 0, saw.Length);
+                                            fs[j][1].Write(ripe, 0, ripe.Length);
+                                            fs[j][2].Write(harvested, 0, harvested.Length);
+                                            fs[j][3].Write(tickCount, 0, tickCount.Length);
+                                            fs[j][4].Write(type, 0, type.Length);
+                                        }
+                                    }
+                                }
                             }//end if
                         }
 
@@ -451,62 +553,64 @@ namespace WindowsPhoneGame5
                                     field[i].type = 0;
                                     field[i].tick = 0;//不计时
                                 }//end if
-                            }//end for
+                            }
+
+                            //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
+#if WINDOWS_PHONE
+                            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
+#else
+            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
+#endif
+
+                            //打开独立存储空间，写文件
+
+                            using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
+                            {
+                                IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
+                                fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
+                                fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
+                                fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
+                                fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
+                                fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
+                                fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
+
+                                if (fs_carrot != null)
+                                {
+                                    //写数据
+                                    byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
+                                    fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
+
+                                }
+                                if (fs_cabbage != null)
+                                {
+                                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
+                                    fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
+                                }
+
+                                for (int j = 0; j < 6; j++)
+                                {
+                                    if (fs[j][0] != null && fs[j][1] != null && fs[j][2] != null && fs[j][3] != null && fs[j][4] != null)
+                                    {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
+                                        byte[] saw = System.BitConverter.GetBytes(this.field[j].isSaw);
+                                        byte[] ripe = System.BitConverter.GetBytes(this.field[j].isRipe);
+                                        byte[] harvested = System.BitConverter.GetBytes(this.field[j].isHarvested);
+                                        byte[] tickCount = System.BitConverter.GetBytes(this.field[j].tick);
+                                        byte[] type = System.BitConverter.GetBytes(this.field[j].type);
+
+                                        fs[j][0].Write(saw, 0, saw.Length);
+                                        fs[j][1].Write(ripe, 0, ripe.Length);
+                                        fs[j][2].Write(harvested, 0, harvested.Length);
+                                        fs[j][3].Write(tickCount, 0, tickCount.Length);
+                                        fs[j][4].Write(type, 0, type.Length);
+                                    }
+                                }
+                            }
                         }//end if
                         break;
                 }
             }
 
-            //保存游戏状态信息，这里包括每块田的信息和收获的白数书和胡萝卜数
-#if WINDOWS_PHONE
-            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForApplication();
-#else
-            IsolatedStorageFile savegameStorage = IsolatedStorageFile.GetUserStoreForDomain();
-#endif
-
-            //打开独立存储空间，写文件
-
-            using (IsolatedStorageFileStream fs_carrot = savegameStorage.OpenFile("carrot", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_cabbage = savegameStorage.OpenFile("cabbage", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_1 = savegameStorage.OpenFile("1-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_2 = savegameStorage.OpenFile("1-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_3 = savegameStorage.OpenFile("1-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_4 = savegameStorage.OpenFile("1-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_1_5 = savegameStorage.OpenFile("1-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_1 = savegameStorage.OpenFile("2-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_2 = savegameStorage.OpenFile("2-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_3 = savegameStorage.OpenFile("2-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_4 = savegameStorage.OpenFile("2-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_2_5 = savegameStorage.OpenFile("2-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_1 = savegameStorage.OpenFile("3-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_2 = savegameStorage.OpenFile("3-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_3 = savegameStorage.OpenFile("3-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_4 = savegameStorage.OpenFile("3-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_3_5 = savegameStorage.OpenFile("3-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_1 = savegameStorage.OpenFile("4-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_2 = savegameStorage.OpenFile("4-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_3 = savegameStorage.OpenFile("4-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_4 = savegameStorage.OpenFile("4-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_4_5 = savegameStorage.OpenFile("4-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_1 = savegameStorage.OpenFile("5-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_2 = savegameStorage.OpenFile("5-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_3 = savegameStorage.OpenFile("5-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_4 = savegameStorage.OpenFile("5-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_5_5 = savegameStorage.OpenFile("5-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_1 = savegameStorage.OpenFile("6-1", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_2 = savegameStorage.OpenFile("6-2", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_3 = savegameStorage.OpenFile("6-3", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_4 = savegameStorage.OpenFile("6-4", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write), fs_6_5 = savegameStorage.OpenFile("6-5", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write))
-            {
-                IsolatedStorageFileStream[][] fs = new IsolatedStorageFileStream[6][];
-                fs[0] = new IsolatedStorageFileStream[] { fs_1_1, fs_1_2, fs_1_3, fs_1_4, fs_1_5 };
-                fs[1] = new IsolatedStorageFileStream[] { fs_2_1, fs_2_2, fs_2_3, fs_2_4, fs_2_5 };
-                fs[2] = new IsolatedStorageFileStream[] { fs_3_1, fs_3_2, fs_3_3, fs_3_4, fs_3_5 };
-                fs[3] = new IsolatedStorageFileStream[] { fs_4_1, fs_4_2, fs_4_3, fs_4_4, fs_4_5 };
-                fs[4] = new IsolatedStorageFileStream[] { fs_5_1, fs_5_2, fs_5_3, fs_5_4, fs_5_5 };
-                fs[5] = new IsolatedStorageFileStream[] { fs_6_1, fs_6_2, fs_6_3, fs_6_4, fs_6_5 };
-
-                if (fs_carrot != null)
-                {
-                    //写数据
-                    byte[] bytes_carrot = System.BitConverter.GetBytes(this.carrot);//写入收获的胡萝卜数
-                    fs_carrot.Write(bytes_carrot, 0, bytes_carrot.Length);
-
-                }
-                if (fs_cabbage != null)
-                {
-                    byte[] bytes_Chinese_cabbage = System.BitConverter.GetBytes(this.Chinese_cabbage);//写入收获的白菜数
-                    fs_cabbage.Write(bytes_Chinese_cabbage, 0, bytes_Chinese_cabbage.Length);
-                }
-
-                for (int i = 0; i < 6; i++)
-                {
-                    if (fs[i][0] != null && fs[i][1] != null && fs[i][2] != null && fs[i][3] != null && fs[i][4] != null)
-                    {//对田地，要存储的就是5个值，1.是否播种，2.是否成熟，3.是否收割，4.播种到现在经历的时间， 5.蔬菜类型
-                        byte[] saw = System.BitConverter.GetBytes(this.field[i].isSaw);
-                        byte[] ripe = System.BitConverter.GetBytes(this.field[i].isRipe);
-                        byte[] harvested = System.BitConverter.GetBytes(this.field[i].isHarvested);
-                        byte[] tickCount = System.BitConverter.GetBytes(this.field[i].tick);
-                        byte[] type = System.BitConverter.GetBytes(this.field[i].type);
-
-                        fs[i][0].Write(saw, 0, saw.Length);
-                        fs[i][1].Write(ripe, 0, ripe.Length);
-                        fs[i][2].Write(harvested, 0, harvested.Length);
-                        fs[i][3].Write(tickCount, 0, tickCount.Length);
-                        fs[i][4].Write(type, 0, type.Length);
-                    }
-                }
-            }
+            
 
             base.Update(gameTime);
         }

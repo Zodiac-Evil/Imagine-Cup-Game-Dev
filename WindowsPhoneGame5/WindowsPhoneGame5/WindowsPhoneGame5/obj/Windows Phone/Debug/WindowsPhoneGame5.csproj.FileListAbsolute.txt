@@ -22,9 +22,3 @@ bin\Windows Phone\Debug\
 C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\WindowsPhoneGame5.xap
 C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\obj\Windows Phone\Debug\XapCacheFile.xml
 C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\obj\Windows Phone\Debug\WindowsPhoneGame5.csprojResolveAssemblyReference.cache
-C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\WindowsPhoneGame5.xap
-C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\obj\Windows Phone\Debug\XapCacheFile.xml
-C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\bin\Windows Phone\Debug\AppManifest.xaml
-C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\obj\Windows Phone\Debug\WMAppManifest.xml.g
-C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\WindowsPhoneGame5\WindowsPhoneGame5\WindowsPhoneGame5\obj\Windows Phone\Debug\WMAppManifest.xml
-bin\Windows Phone\Debug\
