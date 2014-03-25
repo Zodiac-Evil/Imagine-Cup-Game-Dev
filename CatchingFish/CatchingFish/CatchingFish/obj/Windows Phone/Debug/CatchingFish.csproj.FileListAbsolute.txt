@@ -3,9 +3,7 @@ C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\play.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\fish.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Background.xnb
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\cat_net.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\btnHelp.xnb
-C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Instructions.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Windows Ding.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Times New Roman.xnb
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.dll
@@ -20,3 +18,10 @@ C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\
 bin\Windows Phone\Debug\
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
 C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\net_fish.xnb
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\CatchingFish.xap
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\XapCacheFile.xml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\AppManifest.xaml
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml.g
+C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\obj\Windows Phone\Debug\WMAppManifest.xml
+bin\Windows Phone\Debug\

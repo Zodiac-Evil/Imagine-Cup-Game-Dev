@@ -71,8 +71,6 @@ namespace CatchingFish
         Vector2 logoPosition;//渔网的坐标
         Vector2 logoVelocity;//渔网的速度
 
-        //Vector2 endpoint = new Vector2(200, 300);
-        //Vector2 endpoint01 = new Vector2(200, 300);
 
         //SoundEffect soundEffect;
 
@@ -185,9 +183,10 @@ namespace CatchingFish
             spriteBatch = new SpriteBatch(GraphicsDevice);
             ContentManager cm = this.Content;
             scoreFont = Content.Load<SpriteFont>("Times New Roman");
-            logo = Content.Load<Texture2D>("cat_net");
+            logo = Content.Load<Texture2D>("net_fish");
             Viewport viewport = graphics.GraphicsDevice.Viewport;
             logoPosition = new Vector2((viewport.Width - logo.Width)/2, viewport.Height - logo.Height);
+            
 
             for (int i = 0; i < 8; i++)
             {
@@ -381,6 +380,7 @@ namespace CatchingFish
 			
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), null, Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
 
+            spriteBatch.Draw(pause, new Vector2(435, 10), Color.White);
             
             spriteBatch.Draw(logo, logoPosition, Color.White);
             for (int i = 0; i < 8; i++)
@@ -389,10 +389,10 @@ namespace CatchingFish
                 {
                     spriteBatch.Draw(fishes[i].fish_pic, fishes[i].position, fishes[i].color);
                 }
-                /*else
+                else
                 {
-                    spriteBatch.DrawString(scoreFont, "+1", new Vector2(logoPosition.X + 10, logoPosition.Y - 10), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-                }*/
+                    spriteBatch.DrawString(scoreFont, "+1", new Vector2(logoPosition.X + 10, logoPosition.Y - 10), Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+                }
 
             }
             spriteBatch.DrawString(scoreFont, "Fishes caught: " + fishCount, new Vector2(10, 10), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);

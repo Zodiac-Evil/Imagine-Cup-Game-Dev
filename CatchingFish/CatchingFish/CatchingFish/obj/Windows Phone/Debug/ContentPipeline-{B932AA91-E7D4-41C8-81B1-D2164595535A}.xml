@@ -44,16 +44,7 @@
       <Processor>TextureProcessor</Processor>
       <Options>None</Options>
       <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Background.xnb</Output>
-      <Time>2014-03-20T15:18:00.6798718+08:00</Time>
-    </Item>
-    <Item>
-      <Source>cat_net.png</Source>
-      <Name>cat_net</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\cat_net.xnb</Output>
-      <Time>2014-03-13T16:12:37.2955289+08:00</Time>
+      <Time>2014-03-25T10:10:03.5958449+08:00</Time>
     </Item>
     <Item>
       <Source>btnHelp.png</Source>
@@ -63,15 +54,6 @@
       <Options>None</Options>
       <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\btnHelp.xnb</Output>
       <Time>2014-03-13T23:33:27.8200521+08:00</Time>
-    </Item>
-    <Item>
-      <Source>Instructions.png</Source>
-      <Name>Instructions</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Instructions.xnb</Output>
-      <Time>2014-03-13T23:33:46.6910457+08:00</Time>
     </Item>
     <Item>
       <Source>Windows Ding.wav</Source>
@@ -90,6 +72,15 @@
       <Options>None</Options>
       <Output>C:\Users\Zodiac\documents\visual studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\Times New Roman.xnb</Output>
       <Time>2014-03-20T15:40:40.008359+08:00</Time>
+    </Item>
+    <Item>
+      <Source>net_fish.png</Source>
+      <Name>net_fish</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Zodiac\Documents\Visual Studio 2012\Projects\CatchingFish\CatchingFish\CatchingFish\bin\Windows Phone\Debug\Content\net_fish.xnb</Output>
+      <Time>2014-03-25T12:21:13.5094748+08:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

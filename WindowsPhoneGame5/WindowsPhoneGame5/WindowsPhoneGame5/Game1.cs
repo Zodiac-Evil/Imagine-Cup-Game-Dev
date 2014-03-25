@@ -54,7 +54,7 @@ namespace WindowsPhoneGame5
                 this.isHarvested = isHarvested;
                 this.tick = 0;
                 this.type = 0;
-                this.color = Color.Green;
+                this.color = Color.White;
             }
         }
 
@@ -269,7 +269,7 @@ namespace WindowsPhoneGame5
             //ContentManager cm = this.Content;
             
 
-            backgroundTexture = Content.Load<Texture2D>("background");
+            backgroundTexture = Content.Load<Texture2D>("background_grass");
 
             storageFont = Content.Load<SpriteFont>("Times New Roman");
 
@@ -398,7 +398,7 @@ namespace WindowsPhoneGame5
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    field[i].color = Color.Green;
+                    field[i].color = Color.White;
                 }
             }
 
@@ -464,7 +464,7 @@ namespace WindowsPhoneGame5
                                     {
                                         field[i].isSaw = 1;
                                         field[i].type = 1;
-                                        field[i].color = Color.Green;
+                                        field[i].color = Color.White;
                                         flat_01 = 0;
                                         //开始计时
                                         field[i].tick = 1;
@@ -473,10 +473,25 @@ namespace WindowsPhoneGame5
                                     {
                                         field[i].isSaw = 1;
                                         field[i].type = 2;
-                                        field[i].color = Color.Green;
+                                        field[i].color = Color.White;
                                         flat_02 = 0;
                                         //开始计时
                                         field[i].tick = 1;
+                                    }
+                                }
+                                else if (field[i].isRipe == 1)
+                                {//如果成熟了就直接收割，也就是可以直接点按收割单块田
+                                    field[i].isSaw = 0;
+                                    field[i].isRipe = 0;
+                                    field[i].isHarvested = 1;
+                                    field[i].tick = 0;
+                                    if (field[i].type == 1)
+                                    {
+                                        addChinese_cabbage();
+                                    }
+                                    else if (field[i].type == 2)
+                                    {
+                                        addCarrot();
                                     }
                                 }
 
@@ -635,11 +650,11 @@ namespace WindowsPhoneGame5
             spriteBatch.Draw(backwards, new Vector2(10, 20), Color.White);
 
             //添加数目栏
-            spriteBatch.DrawString(storageFont, "Chinese_cabbage: " + Chinese_cabbage, new Vector2(80, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
-            spriteBatch.DrawString(storageFont, "Carrot: " + carrot, new Vector2(250, 20), Color.Yellow, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            spriteBatch.DrawString(storageFont, "Chinese_cabbage: " + Chinese_cabbage, new Vector2(50, 20), Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
+            spriteBatch.DrawString(storageFont, "Carrot: " + carrot, new Vector2(260, 20), Color.Red, 0, Vector2.Zero, 1, SpriteEffects.None, 1);
 
             //添加收割按钮
-            spriteBatch.Draw(harvest, new Vector2(420, 6), Color.White);
+            spriteBatch.Draw(harvest, new Vector2(400, 6), Color.White);
 
             //画出6块种植田
             for (int j = 0; j < 6; j++)
@@ -690,7 +705,7 @@ namespace WindowsPhoneGame5
             }
             else
             {
-                spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.Green);
+                spriteBatch.Draw(seed_Chinese_cabbage, position_01, Color.White);
             }
 
             if (flat_02 == 1)
@@ -699,7 +714,7 @@ namespace WindowsPhoneGame5
             }
             else
             {
-                spriteBatch.Draw(seed_carrot, position_02, Color.Green);
+                spriteBatch.Draw(seed_carrot, position_02, Color.White);
             }
 
             

@@ -30,13 +30,6 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="background.jpg">
-      <Name>background</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Times New Roman.spritefont">
       <Name>Times New Roman</Name>
       <Importer>FontDescriptionImporter</Importer>
@@ -44,23 +37,32 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="backwards.png">
-      <Name>backwards</Name>
+    <Compile Include="Windows Ding.wav">
+      <Name>Windows Ding</Name>
+      <Importer>WavImporter</Importer>
+      <Processor>SoundEffectProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="solid.png">
+      <Name>solid</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="fruit_cabbage.jpg">
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="fruit_cabbage.png">
       <Name>fruit_cabbage</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="fruit_carrot.jpg">
+    <Compile Include="fruit_carrot.png">
       <Name>fruit_carrot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="harvest.png">
-      <Name>harvest</Name>
+    <Compile Include="seed_carrot.png">
+      <Name>seed_carrot</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -69,30 +71,32 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
+    <Compile Include="seed_Chinese_cabbage.png">
+      <Name>seed_Chinese_cabbage</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="seed_Chinese_cabbage_big.png">
       <Name>seed_Chinese_cabbage_big</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="solid.jpg">
-      <Name>solid</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="backwards.png">
+      <Name>backwards</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Windows Ding.wav">
-      <Name>Windows Ding</Name>
-      <Importer>WavImporter</Importer>
-      <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="seed_carrot.png">
-      <Name>seed_carrot</Name>
+    <Compile Include="background_grass.jpg">
+      <Name>background_grass</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="seed_Chinese_cabbage.png">
-      <Name>seed_Chinese_cabbage</Name>
+    <Compile Include="harvest.png">
+      <Name>harvest</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

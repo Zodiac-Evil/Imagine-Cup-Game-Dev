@@ -1,5 +1,5 @@
 //
-//  Cultivate.cpp
+//  Cultivate.cs
 //  
 //
 //  Created by Zodiac on 14-3-24.
@@ -60,7 +60,7 @@ namespace WindowsPhoneGame
                 this.isHarvested = isHarvested;
                 this.tick = 0;
                 this.type = 0;
-                this.color = Color.Green;
+                this.color = Color.White;
             }
         }
 		
@@ -103,6 +103,13 @@ namespace WindowsPhoneGame
             position_01 = new Vector2(80, 710);
             position_02 = new Vector2(320, 710);
 			
+			field[0] = new fields(1, 50, 50, 0, 0, 0);
+            field[1] = new fields(3, 50, 275, 0, 0, 0);
+            field[2] = new fields(2, 290, 50, 0, 0, 0);
+            field[3] = new fields(4, 290, 275, 0, 0, 0);
+            field[4] = new fields(5, 50, 500, 0, 0, 0);
+            field[5] = new fields(6, 290, 500, 0, 0, 0);
+			
             // Windows Phone 的默认帧速率为 30 fps。
             TargetElapsedTime = TimeSpan.FromTicks(333333);
 			
@@ -119,12 +126,7 @@ namespace WindowsPhoneGame
         protected void initialize()
         {
             // TODO: 在此处添加初始化逻辑
-            field[0] = new fields(1, 50, 50, 0, 0, 0);
-            field[1] = new fields(3, 50, 275, 0, 0, 0);
-            field[2] = new fields(2, 290, 50, 0, 0, 0);
-            field[3] = new fields(4, 290, 275, 0, 0, 0);
-            field[4] = new fields(5, 50, 500, 0, 0, 0);
-            field[5] = new fields(6, 290, 500, 0, 0, 0);
+            
 			
             //打开本地存储独立空间，加载存在文件中的数据
 			#if WINDOWS_PHONE
@@ -297,18 +299,15 @@ namespace WindowsPhoneGame
         /// 检查冲突、收集输入信息以及播放音频。
         /// </summary>
         /// <param name="gameTime">提供计时值的快照。</param>
-        protected void update(GameTime gameTime, GraphicsDeviceManager gdm)
+        protected void update(GameTime gameTime)
         {
             // 允许游戏退出
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 			
             // TODO: 在此处添加更新逻辑
-            Viewport view = gdm.GraphicsDevice.Viewport;
 			
             //计算消耗时间
-            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float totalTime = (float)gameTime.TotalGameTime.TotalSeconds;
 			
             for (int j = 0; j < 6; j++)
             {
@@ -385,7 +384,7 @@ namespace WindowsPhoneGame
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    field[i].color = Color.Green;
+                    field[i].color = Color.White;
                 }
             }
 			
@@ -451,7 +450,7 @@ namespace WindowsPhoneGame
                                     {
                                         field[i].isSaw = 1;
                                         field[i].type = 1;
-                                        field[i].color = Color.Green;
+                                        field[i].color = Color.White;
                                         flat_01 = 0;
                                         //开始计时
                                         field[i].tick = 1;
@@ -460,10 +459,25 @@ namespace WindowsPhoneGame
                                     {
                                         field[i].isSaw = 1;
                                         field[i].type = 2;
-                                        field[i].color = Color.Green;
+                                        field[i].color = Color.White;
                                         flat_02 = 0;
                                         //开始计时
                                         field[i].tick = 1;
+                                    }
+                                }
+								else if (field[i].isRipe == 1)
+                                {//如果成熟了就直接收割，也就是可以直接点按收割单块田
+                                    field[i].isSaw = 0;
+                                    field[i].isRipe = 0;
+                                    field[i].isHarvested = 1;
+                                    field[i].tick = 0;
+                                    if (field[i].type == 1)
+                                    {
+                                        addChinese_cabbage();
+                                    }
+                                    else if (field[i].type == 2)
+                                    {
+                                        addCarrot();
                                     }
                                 }
 								
@@ -670,7 +684,7 @@ namespace WindowsPhoneGame
             }
             else
             {
-                sb.Draw(seed_Chinese_cabbage, position_01, Color.Green);
+                sb.Draw(seed_Chinese_cabbage, position_01, Color.White);
             }
 			
             if (flat_02 == 1)
@@ -679,7 +693,7 @@ namespace WindowsPhoneGame
             }
             else
             {
-                sb.Draw(seed_carrot, position_02, Color.Green);
+                sb.Draw(seed_carrot, position_02, Color.White);
             }
         }
 		

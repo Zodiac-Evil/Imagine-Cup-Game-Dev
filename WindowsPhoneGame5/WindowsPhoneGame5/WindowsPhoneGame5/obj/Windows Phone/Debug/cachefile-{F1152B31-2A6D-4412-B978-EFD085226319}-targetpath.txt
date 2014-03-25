@@ -1,12 +1,12 @@
-Content\background.xnb
 Content\backwards.xnb
-Content\fruit_cabbage.xnb
-Content\fruit_carrot.xnb
 Content\harvest.xnb
 Content\seed_carrot_big.xnb
 Content\seed_Chinese_cabbage_big.xnb
-Content\solid.xnb
 Content\seed_carrot.xnb
 Content\seed_Chinese_cabbage.xnb
 Content\Times New Roman.xnb
 Content\Windows Ding.xnb
+Content\background_grass.xnb
+Content\solid.xnb
+Content\fruit_cabbage.xnb
+Content\fruit_carrot.xnb
